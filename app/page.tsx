@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import MessagesCenter from "./MessagesCenter";
+import TasksCenter from "./TasksCenter";
 import { saveSentMessage } from "./message-store";
 
 type Risk = "Critical" | "Watch" | "Stable";
@@ -279,7 +280,7 @@ function MetricCard({ label, value, change, tone, bars }: { label: string; value
 }
 
 export default function Home() {
-  const [screen, setScreen] = useState<"overview" | "messages">("overview");
+  const [screen, setScreen] = useState<"overview" | "tasks" | "messages">("overview");
   const [selectedId, setSelectedId] = useState(1);
   const [riskFilter, setRiskFilter] = useState<"All" | Risk>("All");
   const [query, setQuery] = useState("");
@@ -291,7 +292,7 @@ export default function Home() {
   const [messageDraft, setMessageDraft] = useState("");
 
   useEffect(() => {
-    const syncScreen = () => setScreen(window.location.hash === "#messages" ? "messages" : "overview");
+    const syncScreen = () => setScreen(window.location.hash === "#messages" ? "messages" : window.location.hash === "#tasks" ? "tasks" : "overview");
     syncScreen();
     window.addEventListener("hashchange", syncScreen);
     return () => window.removeEventListener("hashchange", syncScreen);
@@ -339,7 +340,7 @@ export default function Home() {
           <p className="nav-label">Workspace</p>
           <a className={`nav-item ${screen === "overview" ? "active" : ""}`} href="#overview" aria-current={screen === "overview" ? "page" : undefined}><span className="nav-symbol">⌂</span>Overview</a>
           <a className="nav-item" href="#patients"><span className="nav-symbol">◎</span>Patients<span className="nav-count">10</span></a>
-          <a className="nav-item" href="#tasks"><span className="nav-symbol">✓</span>Tasks<span className="nav-count alert">5</span></a>
+          <a className={`nav-item ${screen === "tasks" ? "active" : ""}`} href="#tasks" aria-current={screen === "tasks" ? "page" : undefined}><span className="nav-symbol">✓</span>Tasks<span className="nav-count alert">5</span></a>
           <a className={`nav-item ${screen === "messages" ? "active" : ""}`} href="#messages" aria-current={screen === "messages" ? "page" : undefined}><span className="nav-symbol">□</span>Messages<span className="unread-dot" /></a>
           <p className="nav-label second">Manage</p>
           <button className="nav-item nav-button" type="button" onClick={() => setModal("integration")}><span className="nav-symbol">⌁</span>Integrations</button>
@@ -353,7 +354,7 @@ export default function Home() {
       </aside>
 
       <main className="main" id={screen}>
-        {screen === "messages" ? <MessagesCenter onNotify={notify} /> : <>
+        {screen === "messages" ? <MessagesCenter onNotify={notify} /> : screen === "tasks" ? <TasksCenter onNotify={notify} /> : <>
         <header className="topbar">
           <div>
             <p className="eyebrow">Wednesday, 23 September</p>

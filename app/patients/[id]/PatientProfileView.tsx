@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getPatientProfile } from "../data";
+import type { PatientProfile } from "../../../db/types";
 import { saveSentMessage } from "../../message-store";
 
 type ProfileTab = "Overview" | "Clinical record" | "Labs & vitals" | "Documents & history";
@@ -11,8 +11,7 @@ function StatusBadge({ risk }: { risk: "Critical" | "Watch" | "Stable" }) {
   return <span className={`profile-risk ${risk.toLowerCase()}`}><i />{risk}</span>;
 }
 
-export default function PatientProfileView({ patientId }: { patientId: string }) {
-  const patient = getPatientProfile(patientId);
+export default function PatientProfileView({ patient }: { patient: PatientProfile | undefined }) {
   const [activeTab, setActiveTab] = useState<ProfileTab>("Overview");
   const [modal, setModal] = useState<ActionModal>(null);
   const [toast, setToast] = useState("");

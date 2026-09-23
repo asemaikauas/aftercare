@@ -1,0 +1,36 @@
+export type ProfileRisk = "Critical" | "Watch" | "Stable";
+
+export type PatientProfile = {
+  id: string;
+  name: string;
+  initials: string;
+  risk: ProfileRisk;
+  score: number;
+  age: number;
+  dob: string;
+  pronouns: string;
+  sex: string;
+  language: string;
+  phone: string;
+  email: string;
+  address: string;
+  emergencyContact: string;
+  mrn: string;
+  procedure: string;
+  procedureDate: string;
+  dischargeDate: string;
+  service: string;
+  nextAppointment: string;
+  alert: string;
+  summary: string;
+  careTeam: { name: string; role: string; initials: string }[];
+  conditions: string[];
+  allergies: string[];
+  medications: { name: string; detail: string; status: string }[];
+  symptoms: string[];
+  metrics: { label: string; value: string; context: string; tone: string }[];
+  labs: { date: string; name: string; value: string; reference: string; status: "High" | "Low" | "Normal" | "Pending" }[];
+  tasks: { label: string; detail: string; done: boolean }[];
+  documents: { name: string; type: string; date: string }[];
+  timeline: { time: string; title: string; detail: string; source: string; tone: string }[];
+};

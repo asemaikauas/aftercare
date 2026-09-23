@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import MessagesCenter from "./MessagesCenter";
 import TasksCenter from "./TasksCenter";
 import CheckinsCenter from "./CheckinsCenter";
+import CareTeamCenter from "./CareTeamCenter";
 import { saveSentMessage } from "./message-store";
 
 type Risk = "Critical" | "Watch" | "Stable";
@@ -281,7 +282,7 @@ function MetricCard({ label, value, change, tone, bars }: { label: string; value
 }
 
 export default function Home() {
-  const [screen, setScreen] = useState<"overview" | "checkins" | "tasks" | "messages">("overview");
+  const [screen, setScreen] = useState<"overview" | "checkins" | "tasks" | "messages" | "team">("overview");
   const [selectedId, setSelectedId] = useState(1);
   const [riskFilter, setRiskFilter] = useState<"All" | Risk>("All");
   const [query, setQuery] = useState("");
@@ -293,7 +294,7 @@ export default function Home() {
   const [messageDraft, setMessageDraft] = useState("");
 
   useEffect(() => {
-    const syncScreen = () => setScreen(window.location.hash === "#messages" ? "messages" : window.location.hash === "#tasks" ? "tasks" : window.location.hash === "#checkins" ? "checkins" : "overview");
+    const syncScreen = () => setScreen(window.location.hash === "#messages" ? "messages" : window.location.hash === "#tasks" ? "tasks" : window.location.hash === "#checkins" ? "checkins" : window.location.hash === "#team" ? "team" : "overview");
     syncScreen();
     window.addEventListener("hashchange", syncScreen);
     return () => window.removeEventListener("hashchange", syncScreen);
@@ -340,14 +341,12 @@ export default function Home() {
         <nav aria-label="Primary navigation">
           <p className="nav-label">Workspace</p>
           <a className={`nav-item ${screen === "overview" ? "active" : ""}`} href="#overview" aria-current={screen === "overview" ? "page" : undefined}><span className="nav-symbol">⌂</span>Overview</a>
-          <a className="nav-item" href="#patients"><span className="nav-symbol">◎</span>Patients<span className="nav-count">10</span></a>
           <a className={`nav-item ${screen === "checkins" ? "active" : ""}`} href="#checkins" aria-current={screen === "checkins" ? "page" : undefined}><span className="nav-symbol">◉</span>Check-ins<span className="nav-count alert">2</span></a>
           <a className={`nav-item ${screen === "tasks" ? "active" : ""}`} href="#tasks" aria-current={screen === "tasks" ? "page" : undefined}><span className="nav-symbol">✓</span>Tasks<span className="nav-count alert">5</span></a>
           <a className={`nav-item ${screen === "messages" ? "active" : ""}`} href="#messages" aria-current={screen === "messages" ? "page" : undefined}><span className="nav-symbol">□</span>Messages<span className="unread-dot" /></a>
           <p className="nav-label second">Manage</p>
           <button className="nav-item nav-button" type="button" onClick={() => setModal("integration")}><span className="nav-symbol">⌁</span>Integrations</button>
-          <a className="nav-item" href="#team"><span className="nav-symbol">◌</span>Care team</a>
-          <a className="nav-item" href="#settings"><span className="nav-symbol">⚙</span>Settings</a>
+          <a className={`nav-item ${screen === "team" ? "active" : ""}`} href="#team" aria-current={screen === "team" ? "page" : undefined}><span className="nav-symbol">◌</span>Care Team</a>
         </nav>
         <div className="sidebar-foot">
           <div className="clinic-switcher"><span className="clinic-icon">NB</span><span><strong>Northbridge Clinic</strong><small>Orthopedic recovery</small></span><span>⌄</span></div>
@@ -356,7 +355,7 @@ export default function Home() {
       </aside>
 
       <main className="main" id={screen}>
-        {screen === "messages" ? <MessagesCenter onNotify={notify} /> : screen === "tasks" ? <TasksCenter onNotify={notify} /> : screen === "checkins" ? <CheckinsCenter onNotify={notify} /> : <>
+        {screen === "messages" ? <MessagesCenter onNotify={notify} /> : screen === "tasks" ? <TasksCenter onNotify={notify} /> : screen === "checkins" ? <CheckinsCenter onNotify={notify} /> : screen === "team" ? <CareTeamCenter onNotify={notify} /> : <>
         <header className="topbar">
           <div>
             <p className="eyebrow">Wednesday, 23 September</p>

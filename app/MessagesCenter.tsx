@@ -77,7 +77,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
   return (
     <div className="messages-page">
       <header className="messages-header">
-        <div><p className="eyebrow">Care coordination</p><h1>Messages</h1><p className="subtitle">Review patient conversations and every message sent by the care team.</p></div>
+        <div><p className="eyebrow">Care coordination</p><h1>Messages</h1><p className="subtitle">Patient conversations and follow-ups.</p></div>
         <div className="messages-header-actions"><span className="sync-pill"><i />Messaging connected <b>Demo</b></span><button className="primary-button" type="button" onClick={() => { setFilter("Sent"); setDraft("Hi, this is Maya from Northbridge Clinic. I’m checking in about your recovery today."); }}>＋ New message</button></div>
       </header>
 
@@ -85,7 +85,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
         <div><span className="message-summary-icon sent">↗</span><p><strong>{sentCount}</strong><small>Sent messages</small></p><em>All delivered</em></div>
         <div><span className="message-summary-icon inbox">↙</span><p><strong>{inboxCount}</strong><small>Patient replies</small></p><em>{inboxCount} received</em></div>
         <div><span className="message-summary-icon waiting">◷</span><p><strong>{awaitingReply}</strong><small>Awaiting reply</small></p><em>Follow up</em></div>
-        <div className="message-safety"><span>✦</span><p><strong>Staff-approved communication</strong><small>AI may draft; a care-team member approves every outgoing message.</small></p></div>
+        <div className="message-safety"><span>✦</span><p><strong>Staff approved</strong><small>Every outgoing message is reviewed.</small></p></div>
       </section>
 
       <section className="message-workspace">
@@ -103,7 +103,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
         <article className="conversation-panel">
           {selectedPatient ? <>
             <header className="conversation-header"><div className="conversation-person"><span className="avatar large">{selectedPatient.initials}<i /></span><div><h2>{selectedPatient.patientName}</h2><p>Patient #{selectedPatient.patientId} · Post-discharge recovery</p></div></div><div><a href={`/patients/${selectedPatient.patientId}`}>Open profile</a><button aria-label="More conversation options">•••</button></div></header>
-            <div className="conversation-notice"><span>i</span>Messages are part of the synthetic demo record and are not delivered to real patients.</div>
+            <div className="conversation-notice"><span>i</span>Demo messages are not sent to real patients.</div>
             <div className="message-history" aria-live="polite">
               <div className="history-day"><span>Recovery conversation</span></div>
               {selectedThread.map((message) => <div key={message.id} className={`message-bubble-row ${message.direction}`}><div className="message-bubble"><div><strong>{message.direction === "sent" ? "You" : message.patientName}</strong><time>{formatMessageTime(message.sentAt)}</time></div><p>{message.body}</p><footer><span>{message.channel}</span><span>{message.status}{message.direction === "sent" ? " ✓" : ""}</span></footer></div></div>)}
@@ -112,7 +112,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
           </> : <div className="conversation-empty"><span>□</span><h2>Select a conversation</h2><p>Choose a patient thread to review sent messages and replies.</p></div>}
         </article>
       </section>
-      <footer className="page-foot"><span>Continuum demo workspace · Messages stored on this device</span><span>Synthetic patient data · Not for emergency use</span></footer>
+      <footer className="page-foot"><span>Continuum · Messages stored on this device</span><span>Synthetic data · Not for emergency use</span></footer>
     </div>
   );
 }

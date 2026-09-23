@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import MessagesCenter from "./MessagesCenter";
 import TasksCenter from "./TasksCenter";
+import CheckinsCenter from "./CheckinsCenter";
 import { saveSentMessage } from "./message-store";
 
 type Risk = "Critical" | "Watch" | "Stable";
@@ -280,7 +281,7 @@ function MetricCard({ label, value, change, tone, bars }: { label: string; value
 }
 
 export default function Home() {
-  const [screen, setScreen] = useState<"overview" | "tasks" | "messages">("overview");
+  const [screen, setScreen] = useState<"overview" | "checkins" | "tasks" | "messages">("overview");
   const [selectedId, setSelectedId] = useState(1);
   const [riskFilter, setRiskFilter] = useState<"All" | Risk>("All");
   const [query, setQuery] = useState("");
@@ -292,7 +293,7 @@ export default function Home() {
   const [messageDraft, setMessageDraft] = useState("");
 
   useEffect(() => {
-    const syncScreen = () => setScreen(window.location.hash === "#messages" ? "messages" : window.location.hash === "#tasks" ? "tasks" : "overview");
+    const syncScreen = () => setScreen(window.location.hash === "#messages" ? "messages" : window.location.hash === "#tasks" ? "tasks" : window.location.hash === "#checkins" ? "checkins" : "overview");
     syncScreen();
     window.addEventListener("hashchange", syncScreen);
     return () => window.removeEventListener("hashchange", syncScreen);
@@ -340,6 +341,7 @@ export default function Home() {
           <p className="nav-label">Workspace</p>
           <a className={`nav-item ${screen === "overview" ? "active" : ""}`} href="#overview" aria-current={screen === "overview" ? "page" : undefined}><span className="nav-symbol">⌂</span>Overview</a>
           <a className="nav-item" href="#patients"><span className="nav-symbol">◎</span>Patients<span className="nav-count">10</span></a>
+          <a className={`nav-item ${screen === "checkins" ? "active" : ""}`} href="#checkins" aria-current={screen === "checkins" ? "page" : undefined}><span className="nav-symbol">◉</span>Check-ins<span className="nav-count alert">2</span></a>
           <a className={`nav-item ${screen === "tasks" ? "active" : ""}`} href="#tasks" aria-current={screen === "tasks" ? "page" : undefined}><span className="nav-symbol">✓</span>Tasks<span className="nav-count alert">5</span></a>
           <a className={`nav-item ${screen === "messages" ? "active" : ""}`} href="#messages" aria-current={screen === "messages" ? "page" : undefined}><span className="nav-symbol">□</span>Messages<span className="unread-dot" /></a>
           <p className="nav-label second">Manage</p>
@@ -354,12 +356,12 @@ export default function Home() {
       </aside>
 
       <main className="main" id={screen}>
-        {screen === "messages" ? <MessagesCenter onNotify={notify} /> : screen === "tasks" ? <TasksCenter onNotify={notify} /> : <>
+        {screen === "messages" ? <MessagesCenter onNotify={notify} /> : screen === "tasks" ? <TasksCenter onNotify={notify} /> : screen === "checkins" ? <CheckinsCenter onNotify={notify} /> : <>
         <header className="topbar">
           <div>
             <p className="eyebrow">Wednesday, 23 September</p>
             <h1>Good morning, Maya</h1>
-            <p className="subtitle">Here’s what changed across your recovery cohort overnight.</p>
+            <p className="subtitle">Overnight recovery updates.</p>
           </div>
           <div className="top-actions">
             <span className="sync-pill"><i />All sources synced <b>2m ago</b></span>
@@ -382,7 +384,7 @@ export default function Home() {
         <section className="workspace-grid" id="patients">
           <div className="queue-panel">
             <div className="panel-heading">
-              <div><div className="title-row"><h2>Patient priority</h2><span>10 active</span></div><p>Ranked by clinical rules, trend changes, and missed care tasks.</p></div>
+            <div><div className="title-row"><h2>Patient priority</h2><span>10 active</span></div><p>Prioritized by risk and missed care.</p></div>
               <button className="quiet-button" type="button" onClick={() => notify("Daily cohort summary exported")}>Export summary</button>
             </div>
             <div className="queue-toolbar">
@@ -437,7 +439,7 @@ export default function Home() {
                     <div className="brief-actions"><button type="button" onClick={openReminder}>Draft patient message</button><button type="button" onClick={() => setTab("Timeline")}>View evidence</button></div>
                   </section>
 
-                  <div className="section-heading"><div><h3>Signals at a glance</h3><p>Compared with each patient’s personal baseline.</p></div><span className="live-label"><i />Live</span></div>
+                  <div className="section-heading"><div><h3>Signals at a glance</h3></div><span className="live-label"><i />Live</span></div>
                   <div className="metric-grid">
                     <MetricCard label="Resting heart rate" value={selected.metrics.heartRate} change={selected.metrics.heartDelta} tone={selected.risk === "Critical" ? "coral" : "blue"} bars={selected.recovery.slice(4)} />
                     <MetricCard label="Sleep" value={selected.metrics.sleep} change={selected.metrics.sleepDelta} tone="purple" bars={[54, 64, 48, 70, 59, 46, 41, 38]} />
@@ -458,15 +460,15 @@ export default function Home() {
               )}
 
               {tab === "Timeline" && (
-                <section className="tab-card timeline-card"><div className="tab-card-heading"><h3>Patient timeline</h3><p>A traceable log of source data, patient activity, and team actions.</p></div>{selected.timeline.map((item, index) => <div className="timeline-row" key={`${item.time}-${item.title}`}><div className="timeline-line"><span className={item.kind}>{item.kind === "alert" ? "!" : item.kind === "sync" ? "↻" : item.kind === "call" ? "☎" : "✓"}</span>{index < selected.timeline.length - 1 && <i />}</div><time>{item.time}</time><div><strong>{item.title}</strong><p>{item.detail}</p></div></div>)}<button className="wide-button" type="button" onClick={() => notify("Full audit trail prepared")}>Open full audit trail</button></section>
+                <section className="tab-card timeline-card"><div className="tab-card-heading"><h3>Patient timeline</h3><p>Patient and team activity.</p></div>{selected.timeline.map((item, index) => <div className="timeline-row" key={`${item.time}-${item.title}`}><div className="timeline-line"><span className={item.kind}>{item.kind === "alert" ? "!" : item.kind === "sync" ? "↻" : item.kind === "call" ? "☎" : "✓"}</span>{index < selected.timeline.length - 1 && <i />}</div><time>{item.time}</time><div><strong>{item.title}</strong><p>{item.detail}</p></div></div>)}<button className="wide-button" type="button" onClick={() => notify("Full audit trail prepared")}>Open full audit trail</button></section>
               )}
 
               {tab === "Care plan" && (
-                <section className="tab-card"><div className="tab-card-heading"><h3>Today’s care plan</h3><p>Tasks prescribed by the care team. AI may remind, but cannot change this plan.</p></div><div className="progress-block"><div><span>Today’s adherence</span><strong>{Math.round((selected.tasks.filter((task) => task.done).length / selected.tasks.length) * 100)}%</strong></div><i><b style={{ width: `${(selected.tasks.filter((task) => task.done).length / selected.tasks.length) * 100}%` }} /></i></div>{selected.tasks.map((task) => <div className="care-task" key={task.label}><span className={task.done ? "done" : ""}>{task.done ? "✓" : ""}</span><div><strong>{task.label}</strong><small>{task.detail}</small></div>{!task.done && <button type="button" onClick={openReminder}>Remind</button>}</div>)}<button className="wide-button" type="button" onClick={openReminder}>Send care-plan reminder</button></section>
+                <section className="tab-card"><div className="tab-card-heading"><h3>Today’s care plan</h3><p>Prescribed tasks and reminders.</p></div><div className="progress-block"><div><span>Today’s adherence</span><strong>{Math.round((selected.tasks.filter((task) => task.done).length / selected.tasks.length) * 100)}%</strong></div><i><b style={{ width: `${(selected.tasks.filter((task) => task.done).length / selected.tasks.length) * 100}%` }} /></i></div>{selected.tasks.map((task) => <div className="care-task" key={task.label}><span className={task.done ? "done" : ""}>{task.done ? "✓" : ""}</span><div><strong>{task.label}</strong><small>{task.detail}</small></div>{!task.done && <button type="button" onClick={openReminder}>Remind</button>}</div>)}<button className="wide-button" type="button" onClick={openReminder}>Send care-plan reminder</button></section>
               )}
 
               {tab === "Records" && (
-                <section className="tab-card"><div className="tab-card-heading"><h3>Clinical record snapshot</h3><p>Key discharge context assembled for follow-up. Demo data only.</p></div><div className="record-info"><span>Procedure</span><strong>{selected.procedure}</strong><small>Discharged {selected.discharged}</small></div><div className="record-info"><span>Conditions</span><strong>{selected.conditions.join(" · ")}</strong><small>Imported from discharge summary</small></div><h4>Recent laboratory results</h4>{selected.labs.map((lab) => <div className="lab-row expanded" key={lab.name}><span className={`lab-status ${lab.status}`} /><div><strong>{lab.name}</strong><small>{lab.note}</small></div><b>{lab.value}</b></div>)}<div className="source-note"><span>i</span><p><strong>Source traceability</strong>Each item retains its original source and timestamp. AI summaries never overwrite the clinical record.</p></div></section>
+                <section className="tab-card"><div className="tab-card-heading"><h3>Clinical record</h3><p>Discharge and follow-up details.</p></div><div className="record-info"><span>Procedure</span><strong>{selected.procedure}</strong><small>Discharged {selected.discharged}</small></div><div className="record-info"><span>Conditions</span><strong>{selected.conditions.join(" · ")}</strong><small>Discharge summary</small></div><h4>Recent laboratory results</h4>{selected.labs.map((lab) => <div className="lab-row expanded" key={lab.name}><span className={`lab-status ${lab.status}`} /><div><strong>{lab.name}</strong><small>{lab.note}</small></div><b>{lab.value}</b></div>)}<div className="source-note"><span>i</span><p><strong>Source record</strong>Each item keeps its original source and timestamp.</p></div></section>
               )}
             </div>
 
@@ -474,7 +476,7 @@ export default function Home() {
           </aside>
         </section>
 
-        <footer className="page-foot"><span>Continuum demo workspace · Synthetic patient data</span><span>Decision support only — not for emergency use</span></footer>
+        <footer className="page-foot"><span>Synthetic patient data</span><span>Decision support only — not for emergency use</span></footer>
         </>}
       </main>
 

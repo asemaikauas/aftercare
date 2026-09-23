@@ -69,6 +69,13 @@ export default function TasksCenter({ onNotify }: { onNotify: (message: string) 
     return matchesFilter && `${task.title} ${task.patient} ${task.procedure}`.toLowerCase().includes(query.toLowerCase());
   }), [filter, query, tasks]);
 
+  const taskGroups = useMemo(() => ([
+    { status: "overdue" as const, label: "Overdue", note: "Needs attention" },
+    { status: "today" as const, label: "Today", note: "Due before end of day" },
+    { status: "upcoming" as const, label: "Upcoming", note: "Plan ahead" },
+    { status: "complete" as const, label: "Completed", note: "Recently finished" },
+  ]).map((group) => ({ ...group, items: visibleTasks.filter((task) => task.status === group.status) })).filter((group) => group.items.length), [visibleTasks]);
+
   const selected = tasks.find((task) => task.id === selectedId) ?? visibleTasks[0] ?? tasks[0];
   const overdueCount = tasks.filter((task) => task.status === "overdue").length;
   const todayCount = tasks.filter((task) => task.status === "today").length;
@@ -93,15 +100,15 @@ export default function TasksCenter({ onNotify }: { onNotify: (message: string) 
   return (
     <div className="tasks-page">
       <header className="tasks-header">
-        <div><p className="eyebrow">Care coordination</p><h1>Tasks</h1><p className="subtitle">One focused view of every follow-up, review, and patient commitment.</p></div>
+        <div><p className="eyebrow">Care coordination</p><h1>Tasks</h1><p className="subtitle">Follow-ups and reviews due today.</p></div>
         <div className="tasks-header-actions"><span className="tasks-date"><span>23</span><small>SEP<br />WED</small></span><button className="primary-button" type="button" onClick={() => setShowNewTask(true)}><span>＋</span> New task</button></div>
       </header>
 
       <section className="task-summary" aria-label="Task summary">
-        <article className="task-focus-card"><span className="task-focus-icon">✓</span><div><small>Today’s focus</small><strong>{overdueCount + todayCount} tasks need your attention</strong><p>Start with overdue clinical reviews, then work through today’s follow-ups.</p></div><button type="button" onClick={() => { setFilter("My tasks"); setSelectedId(tasks.find((task) => task.status === "overdue")?.id ?? 1); }}>Start focus mode <span>→</span></button></article>
+        <article className="task-focus-card"><span className="task-focus-icon">✓</span><div><small>Today</small><strong>{overdueCount + todayCount} tasks need your attention</strong></div><button type="button" onClick={() => { setFilter("My tasks"); setSelectedId(tasks.find((task) => task.status === "overdue")?.id ?? 1); }}>Start with overdue <span>→</span></button></article>
         <article className="task-stat"><span className="task-stat-icon overdue">!</span><div><strong>{overdueCount}</strong><small>Overdue</small></div><em>Needs action</em></article>
         <article className="task-stat"><span className="task-stat-icon today">◷</span><div><strong>{todayCount}</strong><small>Due today</small></div><em>On schedule</em></article>
-        <article className="task-stat"><span className="task-stat-icon done">✓</span><div><strong>{completionRate}%</strong><small>Completed</small></div><em>Today</em></article>
+        <article className="task-stat"><span className="task-progress-ring" style={{ background: `conic-gradient(var(--green) ${completionRate}%, #e5ebe7 0)` }}><i>{completionRate}</i></span><div><strong>{completionRate}%</strong><small>Completed</small></div><em>Today</em></article>
       </section>
 
       {showNewTask && <section className="quick-task" aria-label="Create a new task"><div><span>New care task</span><strong>What needs to be done?</strong></div><input autoFocus value={newTitle} onChange={(event) => setNewTitle(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") addTask(); if (event.key === "Escape") setShowNewTask(false); }} placeholder="e.g. Call patient after lab review" aria-label="Task title" /><button className="secondary-button" type="button" onClick={() => setShowNewTask(false)}>Cancel</button><button className="dark-button" type="button" disabled={!newTitle.trim()} onClick={addTask}>Add task</button></section>}
@@ -114,7 +121,7 @@ export default function TasksCenter({ onNotify }: { onNotify: (message: string) 
           </div>
 
           <div className="task-list" role="list">
-            {visibleTasks.map((task) => <button key={task.id} role="listitem" type="button" className={`task-row ${selected.id === task.id ? "selected" : ""} ${task.status}`} onClick={() => setSelectedId(task.id)}><span className={`task-check ${task.status === "complete" ? "checked" : ""}`} onClick={(event) => { event.stopPropagation(); if (task.status !== "complete") completeTask(task); }}>{task.status === "complete" ? "✓" : ""}</span><span className={`avatar task-avatar ${task.priority}`}>{task.initials}</span><span className="task-copy"><span><strong>{task.title}</strong><i className={`task-priority ${task.priority}`}>{task.priority}</i></span><small>{task.patient} · {task.procedure}</small></span><span className="task-owner"><span className="mini-owner">{task.ownerInitials}</span><small>{task.owner === "Maya Nelson" ? "You" : task.owner}</small></span><span className={`task-due ${task.status}`}><strong>{task.due}</strong><small>{task.dueDetail}</small></span><span className="task-chevron">›</span></button>)}
+            {taskGroups.map((group) => <section className={`task-group ${group.status}`} key={group.status} aria-label={`${group.label} tasks`}><header><div><span className={`group-dot ${group.status}`} /><strong>{group.label}</strong><b>{group.items.length}</b></div><small>{group.note}</small></header><div className="task-group-card">{group.items.map((task) => <button key={task.id} role="listitem" type="button" className={`task-row ${selected.id === task.id ? "selected" : ""} ${task.status}`} onClick={() => setSelectedId(task.id)}><span className={`task-check ${task.status === "complete" ? "checked" : ""}`} onClick={(event) => { event.stopPropagation(); if (task.status !== "complete") completeTask(task); }}>{task.status === "complete" ? "✓" : ""}</span><span className={`avatar task-avatar ${task.priority}`}>{task.initials}</span><span className="task-copy"><span><strong>{task.title}</strong><i className={`task-priority ${task.priority}`}>{task.priority}</i></span><small>{task.patient} · {task.procedure}</small></span><span className="task-owner"><span className="mini-owner">{task.ownerInitials}</span><small>{task.owner === "Maya Nelson" ? "You" : task.owner}</small></span><span className={`task-due ${task.status}`}><strong>{task.due}</strong><small>{task.dueDetail}</small></span><span className="task-chevron">›</span></button>)}</div></section>)}
             {!visibleTasks.length && <div className="task-empty"><span>✓</span><strong>Nothing here right now</strong><p>Try another task view or search.</p></div>}
           </div>
         </div>
@@ -122,14 +129,14 @@ export default function TasksCenter({ onNotify }: { onNotify: (message: string) 
         <aside className="task-detail-panel">
           <header className="task-detail-head"><div><span className={`detail-status ${selected.status}`}>{statusLabel(selected.status)}</span><span className={`task-priority ${selected.priority}`}>{selected.priority} priority</span></div><button type="button" aria-label="More task options">•••</button><h2>{selected.title}</h2><p>{selected.description}</p></header>
           <section className="task-patient-card"><span className={`avatar large ${selected.priority}`}>{selected.initials}<i /></span><div><span>Patient</span><strong>{selected.patient}</strong><small>{selected.procedure}</small></div><a href={patientProfileIds[selected.patient] ? `/patients/${patientProfileIds[selected.patient]}` : "#patients"}>Open profile <span>→</span></a></section>
-          <section className="task-detail-section"><div className="task-section-title"><div><h3>Action checklist</h3><p>Complete these steps before closing the task.</p></div><span>{selected.status === "complete" ? selected.checklist.length : 0}/{selected.checklist.length}</span></div>{selected.checklist.map((item, index) => <div className="detail-check" key={item}><span className={selected.status === "complete" ? "done" : ""}>{selected.status === "complete" ? "✓" : index + 1}</span><p>{item}</p></div>)}</section>
+          <section className="task-detail-section"><div className="task-section-title"><div><h3>Checklist</h3></div><span>{selected.status === "complete" ? selected.checklist.length : 0}/{selected.checklist.length}</span></div>{selected.checklist.map((item, index) => <div className="detail-check" key={item}><span className={selected.status === "complete" ? "done" : ""}>{selected.status === "complete" ? "✓" : index + 1}</span><p>{item}</p></div>)}</section>
           <section className="task-meta-card"><div><span>Assigned to</span><p><b className="mini-owner">{selected.ownerInitials}</b><strong>{selected.owner}</strong></p></div><div><span>Due</span><strong className={selected.status === "overdue" ? "danger" : ""}>{selected.dueDetail}</strong></div><div><span>Created</span><strong>{selected.created}</strong></div><div><span>Source</span><strong>{selected.source}</strong></div></section>
           <div className="task-detail-actions"><button className="secondary-button" type="button" onClick={() => onNotify(`Reminder prepared for ${selected.patient}`)}>Send reminder</button><button className="dark-button" type="button" disabled={selected.status === "complete"} onClick={() => completeTask(selected)}>{selected.status === "complete" ? "Task completed" : "Mark complete"}</button></div>
-          <footer><span>✦</span><p><strong>Clinical review remains with your team</strong>Completing a task records workflow progress; it does not change the patient’s care plan.</p></footer>
+          <footer><span>✦</span><p><strong>Clinical review required</strong>Completing a task does not change the care plan.</p></footer>
         </aside>
       </section>
 
-      <footer className="page-foot"><span>Continuum demo workspace · Synthetic task data</span><span>Decision support only — not for emergency use</span></footer>
+      <footer className="page-foot"><span>Continuum · Synthetic data</span><span>Not for emergency use</span></footer>
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default function PatientProfileView({ patient }: { patient: PatientProfil
         <span className="brand-mark">C</span>
         <h1>Patient record not found</h1>
         <p>This synthetic demo record may have moved or does not exist.</p>
-        <a href="/">Return to patient priority</a>
+        <a href="/dashboard">Return to patient priority</a>
       </main>
     );
   }
@@ -54,8 +54,8 @@ export default function PatientProfileView({ patient }: { patient: PatientProfil
   return (
     <div className="profile-shell">
       <aside className="profile-sidebar">
-        <a className="brand profile-brand" href="/"><span className="brand-mark">C</span><span>Continuum</span></a>
-        <a className="back-to-cohort" href="/"><span>←</span> Back to patient priority</a>
+        <a className="brand profile-brand" href="/dashboard"><span className="brand-mark">C</span><span>Continuum</span></a>
+        <a className="back-to-cohort" href="/dashboard"><span>←</span> Back to patient priority</a>
         <div className="profile-side-patient">
           <span className={`avatar profile-avatar ${patient.risk.toLowerCase()}`}>{patient.initials}<i /></span>
           <strong>{patient.name}</strong>
@@ -79,7 +79,7 @@ export default function PatientProfileView({ patient }: { patient: PatientProfil
       <main className="profile-main">
         <header className="profile-topbar">
           <div>
-            <p><a href="/">Patients</a><span>›</span>{patient.name}</p>
+            <p><a href="/dashboard">Patients</a><span>›</span>{patient.name}</p>
             <h1>Patient profile</h1>
           </div>
           <div className="profile-header-actions">

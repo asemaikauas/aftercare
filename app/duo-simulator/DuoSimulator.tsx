@@ -194,7 +194,7 @@ export default function DuoSimulator() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[#0c0f0e]">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex flex-col items-center gap-1 px-4 pt-6 text-center">
-        <a href="/" className="pointer-events-auto text-[13px] font-medium text-white/70 hover:text-white hover:underline">← Back to clinician dashboard</a>
+        <a href="/dashboard" className="pointer-events-auto text-[13px] font-medium text-white/70 hover:text-white hover:underline">← Back to clinician dashboard</a>
         <h1 className="mt-2 text-[22px] font-bold text-white">Continuum on iPhone Duo</h1>
         <p className="max-w-md text-[13px] text-white/60">Live prototype rendered on a foldable 3D device · drag to rotate · use the slider to fold</p>
       </div>

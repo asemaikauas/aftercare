@@ -250,7 +250,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
   return (
     <div className="min-h-screen bg-[var(--canvas)] px-4 py-10">
       <div className="mx-auto mb-6 max-w-[380px] text-center">
-        <a href="/" className="text-[13px] font-medium text-[var(--forest)] hover:underline">← Back to clinician dashboard</a>
+        <a href="/dashboard" className="text-[13px] font-medium text-[var(--forest)] hover:underline">← Back to clinician dashboard</a>
         <p className="mt-2 text-[12px] text-[var(--muted)]">Patient app prototype · what {firstName} would see after logging in · mobile mock</p>
       </div>
 

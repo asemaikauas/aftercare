@@ -40,6 +40,7 @@ export default function HomeClient({ patients }: { patients: Patient[] }) {
   const [sentPatients, setSentPatients] = useState<number[]>([]);
   const [appointmentSlot, setAppointmentSlot] = useState("Thu, 24 Sep · 10:30 AM");
   const [messageDraft, setMessageDraft] = useState("");
+  const [authed, setAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
     const syncScreen = () => setScreen(window.location.hash === "#messages" ? "messages" : window.location.hash === "#tasks" ? "tasks" : window.location.hash === "#checkins" ? "checkins" : window.location.hash === "#team" ? "team" : "overview");
@@ -47,6 +48,19 @@ export default function HomeClient({ patients }: { patients: Patient[] }) {
     window.addEventListener("hashchange", syncScreen);
     return () => window.removeEventListener("hashchange", syncScreen);
   }, []);
+
+  useEffect(() => {
+    if (window.localStorage.getItem("continuum_admin_authed") === "true") {
+      setAuthed(true);
+    } else {
+      window.location.href = "/login";
+    }
+  }, []);
+
+  const logOut = () => {
+    window.localStorage.removeItem("continuum_admin_authed");
+    window.location.href = "/";
+  };
 
   const selected = patients.find((patient) => patient.id === selectedId) ?? patients[0];
   const visiblePatients = useMemo(() => patients
@@ -85,6 +99,10 @@ export default function HomeClient({ patients }: { patients: Patient[] }) {
     notify(`Appointment offer sent to ${selected.name}`);
   };
 
+  if (!authed) {
+    return <div className="min-h-screen bg-[var(--canvas)]" />;
+  }
+
   if (!selected) {
     return <div className="app-shell"><main className="main"><p>No patients found.</p></main></div>;
   }
@@ -105,7 +123,7 @@ export default function HomeClient({ patients }: { patients: Patient[] }) {
         </nav>
         <div className="sidebar-foot">
           <div className="clinic-switcher"><span className="clinic-icon">NB</span><span><strong>Northbridge Clinic</strong><small>Orthopedic recovery</small></span><span>⌄</span></div>
-          <div className="user-card"><span className="avatar teal">MN</span><span><strong>Maya Nelson</strong><small>Care manager</small></span><button aria-label="Open account menu">•••</button></div>
+          <div className="user-card"><span className="avatar teal">MN</span><span><strong>Maya Nelson</strong><small>Care manager</small></span><button aria-label="Log out" title="Log out" onClick={logOut}>•••</button></div>
         </div>
       </aside>
 

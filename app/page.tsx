@@ -1,59 +1,93 @@
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[var(--canvas)] text-[var(--ink)]">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <div className="flex items-center gap-2 text-[17px] font-bold tracking-tight">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--forest)] text-white">C</span>
-          Continuum
-        </div>
-        <nav className="hidden items-center gap-8 text-[14px] font-medium text-[var(--muted)] md:flex">
-          <a href="#loop" className="hover:text-[var(--ink)]">How it works</a>
-          <a href="#signals" className="hover:text-[var(--ink)]">Signals</a>
-          <a href="#safety" className="hover:text-[var(--ink)]">Safety</a>
-        </nav>
-        <a href="/login" className="rounded-full bg-[var(--forest)] px-5 py-2.5 text-[14px] font-semibold text-white hover:opacity-90">
-          Administrator Login
-        </a>
-      </header>
-
-      <section className="relative mx-auto max-w-6xl px-6 pb-28 pt-16 text-center">
-        <p className="text-[13px] font-semibold uppercase tracking-[0.2em] text-[var(--forest)]">Post-discharge care command center</p>
-        <h1 className="mx-auto mt-4 max-w-4xl text-[56px] font-extrabold leading-[1.05] tracking-tight md:text-[72px]">
-          Know who needs you<br />before they call.
-        </h1>
-        <p className="mx-auto mt-6 max-w-xl text-[17px] text-[var(--muted)]">
-          Continuum prioritizes your recovery cohort, explains every score with the source signal behind it, and keeps
-          staff, patients, and AI summaries on one traceable record.
-        </p>
-        <div className="mt-9 flex items-center justify-center gap-3">
-          <a href="/login" className="rounded-full bg-[var(--forest)] px-7 py-3.5 text-[15px] font-semibold text-white hover:opacity-90">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#6fb3dd] via-[#bfe0f5] to-[var(--canvas)] pb-28">
+        <header className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-6 py-7">
+          <div className="flex items-center gap-2 text-[17px] font-bold tracking-tight text-[var(--ink)]">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--forest)] text-white">C</span>
+            Continuum
+          </div>
+          <nav className="hidden items-center gap-8 text-[14px] font-medium text-[var(--ink)]/70 md:flex">
+            <a href="#hero" className="font-semibold text-[var(--ink)]">Home</a>
+            <a href="#signals" className="hover:text-[var(--ink)]">Patients</a>
+            <a href="#loop" className="hover:text-[var(--ink)]">Health Overview</a>
+            <a href="#safety" className="hover:text-[var(--ink)]">Escalations</a>
+            <a href="/patient-app" className="hover:text-[var(--ink)]">AI Assistant</a>
+          </nav>
+          <a href="/login" className="rounded-full bg-[var(--green)] px-5 py-2.5 text-[14px] font-semibold text-white hover:opacity-90">
             Administrator Login
           </a>
-          <a href="/patient-app" className="rounded-full border border-[var(--line)] bg-white px-7 py-3.5 text-[15px] font-semibold text-[var(--ink)] hover:bg-[var(--canvas)]">
-            See the patient app
-          </a>
-        </div>
+        </header>
 
-        <div id="signals" className="relative mx-auto mt-20 h-[280px] max-w-3xl">
-          <div className="absolute left-1/2 top-0 w-[300px] -translate-x-1/2 rotate-[-2deg] rounded-2xl border border-[var(--line)] bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.08)]">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">Patient priority</p>
-            <p className="mt-1 text-[14px] font-bold">4 need review now</p>
-            <p className="text-[12px] text-[var(--muted)]">Critical 4 · Watch 3 · Stable 3</p>
+        <div id="hero" className="relative mx-auto max-w-6xl px-6 pt-10 text-center">
+          <h1
+            className="pointer-events-none select-none whitespace-nowrap text-white"
+            style={{ fontSize: "clamp(52px, 13vw, 110px)", lineHeight: 1, letterSpacing: "-0.03em", fontWeight: 900, margin: 0 }}
+          >
+            CONTINUUM
+          </h1>
+
+          <div className="relative z-10 mx-auto -mt-[9vw] flex h-[220px] w-[220px] items-center justify-center rounded-[40px] bg-[var(--forest)] shadow-[0_30px_60px_rgba(22,63,54,.35)] md:h-[260px] md:w-[260px] md:-mt-[130px]">
+            <span className="text-[90px] font-black text-white md:text-[110px]">C</span>
           </div>
-          <div className="absolute left-8 top-24 w-[240px] -rotate-3 rounded-2xl border border-[var(--line)] bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.08)]">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">Voice check-ins</p>
-            <p className="mt-1 text-[14px] font-bold">8 of 10 checked in</p>
-            <p className="text-[12px] text-[var(--muted)]">2 flagged for review</p>
+
+          <div id="signals" className="relative mx-auto mt-4 h-[260px] max-w-3xl">
+            <div className="absolute left-1/2 top-0 w-[210px] -translate-x-1/2 rotate-[-3deg] rounded-2xl bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.12)]">
+              <div className="flex items-center justify-between">
+                <p className="text-[12px] font-semibold text-[var(--ink)]">Resting Heart Rate</p>
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--coral-soft)] text-[12px]">♥</span>
+              </div>
+              <p className="mt-2 text-[11px] text-[var(--muted)]">Post-op day 6 average</p>
+              <p className="mt-2 text-[30px] font-black text-[var(--ink)]">78 <span className="text-[14px] font-semibold text-[var(--muted)]">bpm</span></p>
+            </div>
+
+            <div className="absolute left-0 top-20 w-[190px] -rotate-3 rounded-2xl bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.1)]">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">Patient Priority</p>
+              <p className="mt-2 text-[13px] font-bold text-[var(--ink)]">4 need review now</p>
+              <div className="mt-2 flex items-end gap-1">
+                {[40, 65, 30, 80, 55, 90, 45].map((h, i) => (
+                  <span key={i} className="w-2 rounded-full bg-[var(--coral)]" style={{ height: `${h * 0.35}px` }} />
+                ))}
+              </div>
+            </div>
+
+            <div className="absolute right-0 top-20 w-[190px] rotate-3 rounded-2xl bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.1)]">
+              <div className="flex items-center justify-between">
+                <p className="text-[12px] font-semibold text-[var(--ink)]">AI Care Brief</p>
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--green-soft)] text-[11px]">✦</span>
+              </div>
+              <p className="mt-2 text-[11px] text-[var(--muted)]">AI Generate</p>
+              <p className="mt-2 text-[12px] font-medium text-[var(--ink)]">&ldquo;Escalated for same-day review.&rdquo;</p>
+            </div>
+
+            <div className="absolute left-1/2 top-[172px] w-[220px] -translate-x-1/2 rotate-1 rounded-2xl bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.12)]">
+              <div className="flex items-center justify-between">
+                <p className="text-[12px] font-semibold text-[var(--ink)]">Voice Check-ins</p>
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--amber-soft)] text-[11px]">◉</span>
+              </div>
+              <p className="mt-1 text-[11px] text-[var(--muted)]">AI Generate</p>
+              <p className="mt-2 text-[26px] font-black text-[var(--ink)]">8/10 <span className="text-[13px] font-semibold text-[var(--muted)]">checked in</span></p>
+            </div>
+
+            <div className="absolute -left-10 top-8 hidden w-[120px] -rotate-6 rounded-2xl bg-white/90 p-3 shadow-[0_20px_40px_rgba(24,36,33,.08)] lg:block">
+              <p className="text-[10px] font-semibold text-[var(--muted)]">Care Team</p>
+              <p className="mt-1 text-[18px] font-black text-[var(--ink)]">3 <span className="text-[10px] font-semibold text-[var(--muted)]">online</span></p>
+            </div>
+            <div className="absolute -right-10 top-8 hidden w-[120px] rotate-6 rounded-2xl bg-white/90 p-3 shadow-[0_20px_40px_rgba(24,36,33,.08)] lg:block">
+              <p className="text-[10px] font-semibold text-[var(--muted)]">Adherence</p>
+              <p className="mt-1 text-[18px] font-black text-[var(--ink)]">92<span className="text-[10px] font-semibold text-[var(--muted)]">%</span></p>
+            </div>
           </div>
-          <div className="absolute right-8 top-24 w-[240px] rotate-3 rounded-2xl border border-[var(--line)] bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.08)]">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">Care team</p>
-            <p className="mt-1 text-[14px] font-bold">3 available now</p>
-            <p className="text-[12px] text-[var(--muted)]">30 active assignments</p>
-          </div>
-          <div className="absolute left-1/2 top-[168px] w-[280px] -translate-x-1/2 rotate-1 rounded-2xl border border-[var(--line)] bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.08)]">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">AI care brief</p>
-            <p className="mt-1 text-[13px]">&ldquo;Weight gain and breathlessness meet the clinic&apos;s configured review rule.&rdquo;</p>
-            <p className="mt-1 text-[11px] font-semibold text-[var(--coral)]">Review required</p>
+
+          <p className="mx-auto mt-8 max-w-lg text-[15px] text-[var(--ink)]/70">
+            Prioritize your recovery cohort, explain every score with the source signal behind it, and manage patient
+            care with AI-assisted insights all in one place.
+          </p>
+
+          <div className="mt-7">
+            <a href="/login" className="rounded-full bg-[var(--green)] px-8 py-3.5 text-[15px] font-semibold text-white hover:opacity-90">
+              Administrator Login
+            </a>
           </div>
         </div>
       </section>

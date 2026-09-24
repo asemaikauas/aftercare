@@ -27,14 +27,7 @@ export default function LandingPage() {
             CONTINUUM
           </h1>
 
-          <div
-            className="relative z-10 mx-auto -mt-[9vw] select-none leading-none md:-mt-[130px]"
-            style={{ fontSize: "clamp(140px, 22vw, 230px)", filter: "drop-shadow(0 30px 50px rgba(22,63,54,.35))" }}
-          >
-            🫀
-          </div>
-
-          <div id="signals" className="relative mx-auto mt-4 h-[260px] max-w-3xl">
+          <div id="signals" className="relative mx-auto mt-10 h-[260px] max-w-3xl">
             <div className="absolute left-1/2 top-0 w-[210px] -translate-x-1/2 rotate-[-3deg] rounded-2xl border border-white/50 bg-white/30 p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.15)] backdrop-blur-xl backdrop-saturate-150">
               <div className="flex items-center justify-between">
                 <p className="text-[12px] font-semibold text-[var(--ink)]">Resting Heart Rate</p>

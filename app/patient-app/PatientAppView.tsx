@@ -5,6 +5,13 @@ import type { PatientProfile } from "../../db/types";
 import { dayOfRecovery } from "../dashboard-adapter";
 
 type Screen = "login" | "home" | "checkin";
+type CheckinOption = { label: string; mood: "good" | "okay" | "not_well" };
+
+const CHECKIN_OPTIONS: CheckinOption[] = [
+  { label: "Good — no new symptoms", mood: "good" },
+  { label: "Okay — some discomfort", mood: "okay" },
+  { label: "Not well — I have a new concern", mood: "not_well" },
+];
 
 function StatusBar() {
   return (
@@ -43,10 +50,13 @@ function TabBar({ active }: { active: "home" | "plan" | "messages" | "profile" }
   );
 }
 
-export default function PatientAppView({ patient, embed = false }: { patient: PatientProfile | undefined; embed?: boolean }) {
+export default function PatientAppView({ patient: initialPatient, embed = false }: { patient: PatientProfile | undefined; embed?: boolean }) {
   const [screen, setScreen] = useState<Screen>("login");
   const [taskDone, setTaskDone] = useState<Record<string, boolean>>({});
   const [checkinStep, setCheckinStep] = useState<"ask" | "done">("ask");
+  const [patient, setPatient] = useState(initialPatient);
+  const [submittingMood, setSubmittingMood] = useState<CheckinOption["mood"] | null>(null);
+  const [checkinError, setCheckinError] = useState("");
 
   if (!patient) {
     return (
@@ -55,6 +65,26 @@ export default function PatientAppView({ patient, embed = false }: { patient: Pa
       </div>
     );
   }
+
+  const submitCheckin = async (mood: CheckinOption["mood"]) => {
+    setSubmittingMood(mood);
+    setCheckinError("");
+    try {
+      const response = await fetch("/api/checkin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ patientId: patient.id, mood }),
+      });
+      const data = (await response.json()) as { patient?: PatientProfile; error?: string };
+      if (!response.ok || !data.patient) throw new Error(data.error ?? "Check-in failed");
+      setPatient(data.patient);
+      setCheckinStep("done");
+    } catch {
+      setCheckinError("Couldn't send your check-in. Please try again.");
+    } finally {
+      setSubmittingMood(null);
+    }
+  };
 
   const firstName = patient.name.split(" ")[0];
   const isDone = (label: string, fallback: boolean) => taskDone[label] ?? fallback;
@@ -172,17 +202,19 @@ export default function PatientAppView({ patient, embed = false }: { patient: Pa
                   <h1 className="text-[20px] font-bold text-[var(--ink)]">How are you feeling today?</h1>
                   <p className="text-[13px] text-[var(--muted)]">Your care team reviews every check-in.</p>
                   <div className="mt-2 flex w-full flex-col gap-3">
-                    {["Good — no new symptoms", "Okay — some discomfort", "Not well — I have a new concern"].map((option) => (
+                    {CHECKIN_OPTIONS.map((option) => (
                       <button
-                        key={option}
+                        key={option.label}
                         type="button"
-                        onClick={() => setCheckinStep("done")}
-                        className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-left text-[14px] font-medium text-[var(--ink)] active:bg-[var(--canvas)]"
+                        disabled={submittingMood !== null}
+                        onClick={() => submitCheckin(option.mood)}
+                        className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-left text-[14px] font-medium text-[var(--ink)] active:bg-[var(--canvas)] disabled:opacity-60"
                       >
-                        {option}
+                        {submittingMood === option.mood ? "Sending…" : option.label}
                       </button>
                     ))}
                   </div>
+                  {checkinError && <p className="text-[12px] font-medium text-[var(--coral)]">{checkinError}</p>}
                   {patient.symptoms.length > 0 && patient.symptoms[0] !== "No new symptoms" && (
                     <div className="mt-2 w-full rounded-2xl bg-[var(--amber-soft)] p-3 text-left">
                       <p className="text-[12px] font-semibold text-[var(--ink)]">Reported recently</p>

@@ -43,7 +43,7 @@ function TabBar({ active }: { active: "home" | "plan" | "messages" | "profile" }
   );
 }
 
-export default function PatientAppView({ patient }: { patient: PatientProfile | undefined }) {
+export default function PatientAppView({ patient, embed = false }: { patient: PatientProfile | undefined; embed?: boolean }) {
   const [screen, setScreen] = useState<Screen>("login");
   const [taskDone, setTaskDone] = useState<Record<string, boolean>>({});
   const [checkinStep, setCheckinStep] = useState<"ask" | "done">("ask");
@@ -60,15 +60,8 @@ export default function PatientAppView({ patient }: { patient: PatientProfile | 
   const isDone = (label: string, fallback: boolean) => taskDone[label] ?? fallback;
   const completedCount = patient.tasks.filter((task) => isDone(task.label, task.done)).length;
 
-  return (
-    <div className="min-h-screen bg-[var(--canvas)] px-4 py-10">
-      <div className="mx-auto mb-6 max-w-[380px] text-center">
-        <a href="/" className="text-[13px] font-medium text-[var(--forest)] hover:underline">← Back to clinician dashboard</a>
-        <p className="mt-2 text-[12px] text-[var(--muted)]">Patient app prototype · what {firstName} would see after logging in · mobile mock</p>
-      </div>
-
-      <div className="relative mx-auto h-[812px] w-[375px] overflow-hidden rounded-[3rem] border-[10px] border-black bg-white shadow-[0_30px_60px_rgba(24,36,33,.25)]">
-        <div className="absolute inset-0 flex flex-col overflow-hidden rounded-[2.2rem]">
+  const screenContent = (
+    <div className={`relative flex flex-col overflow-hidden bg-white ${embed ? "h-screen w-screen" : "h-full w-full"}`}>
           <StatusBar />
 
           {screen === "login" && (
@@ -215,6 +208,23 @@ export default function PatientAppView({ patient }: { patient: PatientProfile | 
           )}
 
           {screen !== "login" && <TabBar active="home" />}
+    </div>
+  );
+
+  if (embed) {
+    return screenContent;
+  }
+
+  return (
+    <div className="min-h-screen bg-[var(--canvas)] px-4 py-10">
+      <div className="mx-auto mb-6 max-w-[380px] text-center">
+        <a href="/" className="text-[13px] font-medium text-[var(--forest)] hover:underline">← Back to clinician dashboard</a>
+        <p className="mt-2 text-[12px] text-[var(--muted)]">Patient app prototype · what {firstName} would see after logging in · mobile mock</p>
+      </div>
+
+      <div className="relative mx-auto h-[812px] w-[375px] overflow-hidden rounded-[3rem] border-[10px] border-black bg-white shadow-[0_30px_60px_rgba(24,36,33,.25)]">
+        <div className="absolute inset-0 overflow-hidden rounded-[2.2rem]">
+          {screenContent}
         </div>
       </div>
     </div>

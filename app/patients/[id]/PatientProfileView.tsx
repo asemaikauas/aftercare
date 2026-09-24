@@ -27,7 +27,7 @@ export default function PatientProfileView({ patientId }: { patientId: string })
   if (!patient) {
     return (
       <main className="missing-patient">
-        <span className="brand-mark">C</span>
+        <span className="brand-mark">a</span>
         <h1>Patient record not found</h1>
         <p>This synthetic demo record may have moved or does not exist.</p>
         <a href="/">Return to patient priority</a>
@@ -55,7 +55,7 @@ export default function PatientProfileView({ patientId }: { patientId: string })
   return (
     <div className="profile-shell">
       <aside className="profile-sidebar">
-        <a className="brand profile-brand" href="/"><span className="brand-mark">C</span><span>Continuum</span></a>
+        <a className="brand profile-brand" href="/"><span className="brand-mark">a</span><span>aftercare</span></a>
         <a className="back-to-cohort" href="/"><span>←</span> Back to patient priority</a>
         <div className="profile-side-patient">
           <span className={`avatar profile-avatar ${patient.risk.toLowerCase()}`}>{patient.initials}<i /></span>

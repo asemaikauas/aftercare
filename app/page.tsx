@@ -337,7 +337,7 @@ export default function Home() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="brand"><span className="brand-mark">C</span><span>Continuum</span></div>
+        <div className="brand"><span className="brand-mark">a</span><span>aftercare</span></div>
         <nav aria-label="Primary navigation">
           <p className="nav-label">Workspace</p>
           <a className={`nav-item ${screen === "overview" ? "active" : ""}`} href="#overview" aria-current={screen === "overview" ? "page" : undefined}><span className="nav-symbol">⌂</span>Overview</a>

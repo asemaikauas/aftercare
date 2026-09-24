@@ -86,7 +86,7 @@ export default function CareTeamCenter({ onNotify }: { onNotify: (message: strin
         </article>
       </section>
 
-      <footer className="page-foot"><span>Continuum · Synthetic care-team data</span><span>Assignments require staff confirmation</span></footer>
+      <footer className="page-foot"><span>aftercare · Synthetic care-team data</span><span>Assignments require staff confirmation</span></footer>
     </div>
   );
 }

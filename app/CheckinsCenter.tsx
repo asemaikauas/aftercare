@@ -1,4 +1,5 @@
 "use client";
+import PatientAppInbox from "./PatientAppInbox";
 
 import { useMemo, useState } from "react";
 
@@ -57,6 +58,7 @@ export default function CheckinsCenter({ onNotify }: { onNotify: (message: strin
 
   return (
     <div className="checkins-page">
+      <PatientAppInbox />
       <header className="checkins-header"><div><p className="eyebrow">Daily patient pulse</p><h1>Voice check-ins</h1><p className="subtitle">One-minute conversations, ready for clinical review.</p></div><div className="checkins-header-actions"><span className="sync-pill"><i />Voice service active <b>Live</b></span><button className="primary-button" type="button" onClick={() => onNotify("Daily check-in report exported")}>Export report</button></div></header>
 
       <section className="checkin-summary" aria-label="Daily check-in summary">

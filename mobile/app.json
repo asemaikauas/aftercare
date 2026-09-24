@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "aftercare",
+    "slug": "aftercare-patient",
+    "scheme": "aftercare",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aftercare.patient.demo"
+    },
+    "android": { "package": "com.aftercare.patient.demo" },
+    "plugins": [["expo-notifications", { "color": "#163f36" }]],
+    "web": { "name": "aftercare", "bundler": "metro" }
+  }
+}

@@ -32,17 +32,20 @@ export default function LandingPage() {
           </div>
 
           <div id="signals" className="relative mx-auto mt-4 h-[260px] max-w-3xl">
-            <div className="absolute left-1/2 top-0 w-[210px] -translate-x-1/2 rotate-[-3deg] rounded-2xl bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.12)]">
+            <div className="absolute left-1/2 top-0 w-[210px] -translate-x-1/2 rotate-[-3deg] rounded-2xl border border-white/50 bg-white/30 p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.15)] backdrop-blur-xl backdrop-saturate-150">
               <div className="flex items-center justify-between">
                 <p className="text-[12px] font-semibold text-[var(--ink)]">Resting Heart Rate</p>
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--coral-soft)] text-[12px]">♥</span>
+                <span className="text-[18px] leading-none">❤️</span>
               </div>
-              <p className="mt-2 text-[11px] text-[var(--muted)]">Post-op day 6 average</p>
-              <p className="mt-2 text-[30px] font-black text-[var(--ink)]">78 <span className="text-[14px] font-semibold text-[var(--muted)]">bpm</span></p>
+              <p className="mt-2 text-[11px] text-[var(--ink)]/60">Post-op day 6 average</p>
+              <p className="mt-2 text-[30px] font-black text-[var(--ink)]">78 <span className="text-[14px] font-semibold text-[var(--ink)]/60">bpm</span></p>
             </div>
 
-            <div className="absolute left-0 top-20 w-[190px] -rotate-3 rounded-2xl bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.1)]">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">Patient Priority</p>
+            <div className="absolute left-0 top-20 w-[190px] -rotate-3 rounded-2xl border border-white/50 bg-white/30 p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.12)] backdrop-blur-xl backdrop-saturate-150">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--ink)]/60">Patient Priority</p>
+                <span className="text-[16px] leading-none">🩺</span>
+              </div>
               <p className="mt-2 text-[13px] font-bold text-[var(--ink)]">4 need review now</p>
               <div className="mt-2 flex items-end gap-1">
                 {[40, 65, 30, 80, 55, 90, 45].map((h, i) => (
@@ -51,31 +54,37 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="absolute right-0 top-20 w-[190px] rotate-3 rounded-2xl bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.1)]">
+            <div className="absolute right-0 top-20 w-[190px] rotate-3 rounded-2xl border border-white/50 bg-white/30 p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.12)] backdrop-blur-xl backdrop-saturate-150">
               <div className="flex items-center justify-between">
                 <p className="text-[12px] font-semibold text-[var(--ink)]">AI Care Brief</p>
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--green-soft)] text-[11px]">✦</span>
+                <span className="text-[16px] leading-none">✨</span>
               </div>
-              <p className="mt-2 text-[11px] text-[var(--muted)]">AI Generate</p>
+              <p className="mt-2 text-[11px] text-[var(--ink)]/60">AI Generate</p>
               <p className="mt-2 text-[12px] font-medium text-[var(--ink)]">&ldquo;Escalated for same-day review.&rdquo;</p>
             </div>
 
-            <div className="absolute left-1/2 top-[172px] w-[220px] -translate-x-1/2 rotate-1 rounded-2xl bg-white p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.12)]">
+            <div className="absolute left-1/2 top-[172px] w-[220px] -translate-x-1/2 rotate-1 rounded-2xl border border-white/50 bg-white/30 p-4 text-left shadow-[0_20px_40px_rgba(24,36,33,.15)] backdrop-blur-xl backdrop-saturate-150">
               <div className="flex items-center justify-between">
                 <p className="text-[12px] font-semibold text-[var(--ink)]">Voice Check-ins</p>
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--amber-soft)] text-[11px]">◉</span>
+                <span className="text-[16px] leading-none">🎙️</span>
               </div>
-              <p className="mt-1 text-[11px] text-[var(--muted)]">AI Generate</p>
-              <p className="mt-2 text-[26px] font-black text-[var(--ink)]">8/10 <span className="text-[13px] font-semibold text-[var(--muted)]">checked in</span></p>
+              <p className="mt-1 text-[11px] text-[var(--ink)]/60">AI Generate</p>
+              <p className="mt-2 text-[26px] font-black text-[var(--ink)]">8/10 <span className="text-[13px] font-semibold text-[var(--ink)]/60">checked in</span></p>
             </div>
 
-            <div className="absolute -left-10 top-8 hidden w-[120px] -rotate-6 rounded-2xl bg-white/90 p-3 shadow-[0_20px_40px_rgba(24,36,33,.08)] lg:block">
-              <p className="text-[10px] font-semibold text-[var(--muted)]">Care Team</p>
-              <p className="mt-1 text-[18px] font-black text-[var(--ink)]">3 <span className="text-[10px] font-semibold text-[var(--muted)]">online</span></p>
+            <div className="absolute -left-10 top-8 hidden w-[120px] -rotate-6 rounded-2xl border border-white/50 bg-white/30 p-3 shadow-[0_20px_40px_rgba(24,36,33,.1)] backdrop-blur-xl backdrop-saturate-150 lg:block">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-semibold text-[var(--ink)]/60">Care Team</p>
+                <span className="text-[13px] leading-none">👥</span>
+              </div>
+              <p className="mt-1 text-[18px] font-black text-[var(--ink)]">3 <span className="text-[10px] font-semibold text-[var(--ink)]/60">online</span></p>
             </div>
-            <div className="absolute -right-10 top-8 hidden w-[120px] rotate-6 rounded-2xl bg-white/90 p-3 shadow-[0_20px_40px_rgba(24,36,33,.08)] lg:block">
-              <p className="text-[10px] font-semibold text-[var(--muted)]">Adherence</p>
-              <p className="mt-1 text-[18px] font-black text-[var(--ink)]">92<span className="text-[10px] font-semibold text-[var(--muted)]">%</span></p>
+            <div className="absolute -right-10 top-8 hidden w-[120px] rotate-6 rounded-2xl border border-white/50 bg-white/30 p-3 shadow-[0_20px_40px_rgba(24,36,33,.1)] backdrop-blur-xl backdrop-saturate-150 lg:block">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-semibold text-[var(--ink)]/60">Adherence</p>
+                <span className="text-[13px] leading-none">✅</span>
+              </div>
+              <p className="mt-1 text-[18px] font-black text-[var(--ink)]">92<span className="text-[10px] font-semibold text-[var(--ink)]/60">%</span></p>
             </div>
           </div>
 

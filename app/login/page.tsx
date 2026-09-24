@@ -3,8 +3,8 @@
 import { useState } from "react";
 
 const DEMO_USERNAME = "admin";
-const DEMO_PASSWORD = "continuum2026";
-const AUTH_KEY = "continuum_admin_authed";
+const DEMO_PASSWORD = "aftercare2026";
+const AUTH_KEY = "aftercare_admin_authed";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -32,13 +32,13 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-[var(--canvas)] px-4">
       <div className="w-full max-w-[380px]">
         <a href="/" className="mb-8 flex items-center justify-center gap-2 text-[17px] font-bold tracking-tight text-[var(--ink)]">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--forest)] text-white">C</span>
-          Continuum
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--forest)] text-white">A</span>
+          Aftercare
         </a>
 
         <form onSubmit={handleSubmit} className="rounded-2xl border border-[var(--line)] bg-white p-7 shadow-[0_20px_40px_rgba(24,36,33,.06)]">
           <h1 className="text-[20px] font-bold text-[var(--ink)]">Administrator login</h1>
-          <p className="mt-1 text-[13px] text-[var(--muted)]">Sign in to the Continuum clinician workspace.</p>
+          <p className="mt-1 text-[13px] text-[var(--muted)]">Sign in to the Aftercare clinician workspace.</p>
 
           <label className="mt-6 block text-[12px] font-semibold text-[var(--ink)]">
             Username
@@ -75,7 +75,7 @@ export default function LoginPage() {
 
           <div className="mt-5 rounded-xl bg-[var(--canvas)] px-3.5 py-2.5 text-[11px] text-[var(--muted)]">
             <strong className="text-[var(--ink)]">Demo credentials</strong> — username <code className="font-semibold text-[var(--ink)]">admin</code>, password{" "}
-            <code className="font-semibold text-[var(--ink)]">continuum2026</code>. Mocked for this demo, not real authentication.
+            <code className="font-semibold text-[var(--ink)]">aftercare2026</code>. Mocked for this demo, not real authentication.
           </div>
         </form>
       </div>

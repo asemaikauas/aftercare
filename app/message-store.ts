@@ -14,8 +14,8 @@ export type CareMessage = {
   category: "Check-in" | "Care plan" | "Appointment" | "Patient reply";
 };
 
-export const MESSAGE_STORAGE_KEY = "continuum-demo-messages-v1";
-export const MESSAGE_EVENT = "continuum:messages-updated";
+export const MESSAGE_STORAGE_KEY = "aftercare-demo-messages-v1";
+export const MESSAGE_EVENT = "aftercare:messages-updated";
 
 const seedMessages: CareMessage[] = [
   { id: "seed-1", patientId: 1, patientName: "Sophia Reed", initials: "SR", direction: "sent", body: "Hi Sophia, this is Maya from Northbridge Clinic. Please upload a photo of your incision when you can, and complete today’s symptom check-in.", sentAt: "2026-09-22T16:21:00+04:00", channel: "SMS + in-app", status: "Read", author: "Maya Nelson", category: "Check-in" },

@@ -96,10 +96,10 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
 
           {screen === "login" && (
             <div className="flex flex-1 flex-col items-center justify-center gap-6 px-8 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--forest)] text-2xl font-bold text-white">C</div>
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--forest)] text-2xl font-bold text-white">A</div>
               <div>
                 <h1 className="text-[22px] font-bold text-[var(--ink)]">Welcome back</h1>
-                <p className="mt-1 text-[13px] text-[var(--muted)]">Continuum patient app · synthetic demo account</p>
+                <p className="mt-1 text-[13px] text-[var(--muted)]">Aftercare patient app · synthetic demo account</p>
               </div>
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--canvas)] text-3xl">{patient.initials}</div>
               <p className="text-[15px] font-semibold text-[var(--ink)]">{patient.name}</p>

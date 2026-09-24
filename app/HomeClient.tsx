@@ -50,7 +50,7 @@ export default function HomeClient({ patients }: { patients: Patient[] }) {
   }, []);
 
   useEffect(() => {
-    if (window.localStorage.getItem("continuum_admin_authed") === "true") {
+    if (window.localStorage.getItem("aftercare_admin_authed") === "true") {
       setAuthed(true);
     } else {
       window.location.href = "/login";
@@ -58,7 +58,7 @@ export default function HomeClient({ patients }: { patients: Patient[] }) {
   }, []);
 
   const logOut = () => {
-    window.localStorage.removeItem("continuum_admin_authed");
+    window.localStorage.removeItem("aftercare_admin_authed");
     window.location.href = "/";
   };
 
@@ -110,7 +110,7 @@ export default function HomeClient({ patients }: { patients: Patient[] }) {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="brand"><span className="brand-mark">C</span><span>Continuum</span></div>
+        <div className="brand"><span className="brand-mark">A</span><span>Aftercare</span></div>
         <nav aria-label="Primary navigation">
           <p className="nav-label">Workspace</p>
           <a className={`nav-item ${screen === "overview" ? "active" : ""}`} href="#overview" aria-current={screen === "overview" ? "page" : undefined}><span className="nav-symbol">⌂</span>Overview</a>

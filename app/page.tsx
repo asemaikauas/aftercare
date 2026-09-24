@@ -4,8 +4,8 @@ export default function LandingPage() {
       <section className="relative overflow-hidden bg-gradient-to-b from-[#6fb3dd] via-[#bfe0f5] to-[var(--canvas)] pb-28">
         <header className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-6 py-7">
           <div className="flex items-center gap-2 text-[17px] font-bold tracking-tight text-[var(--ink)]">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--forest)] text-white">C</span>
-            Continuum
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--forest)] text-white">A</span>
+            Aftercare
           </div>
           <nav className="hidden items-center gap-8 text-[14px] font-medium text-[var(--ink)]/70 md:flex">
             <a href="#hero" className="font-semibold text-[var(--ink)]">Home</a>
@@ -24,7 +24,7 @@ export default function LandingPage() {
             className="pointer-events-none select-none whitespace-nowrap text-white"
             style={{ fontSize: "clamp(52px, 13vw, 110px)", lineHeight: 1, letterSpacing: "-0.03em", fontWeight: 900, margin: 0 }}
           >
-            CONTINUUM
+            AFTERCARE
           </h1>
 
           <div id="signals" className="relative mx-auto mt-10 h-[260px] max-w-3xl">
@@ -131,7 +131,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="border-t border-[var(--line)] py-8 text-center text-[12px] text-[var(--muted)]">
-        Continuum · Synthetic patient data · Not for emergency use
+        Aftercare · Synthetic patient data · Not for emergency use
       </footer>
     </div>
   );

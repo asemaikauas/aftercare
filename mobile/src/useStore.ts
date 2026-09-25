@@ -43,7 +43,7 @@ export function useStore() {
         Number(b.kind === "watch-alert") - Number(a.kind === "watch-alert"),
     );
     for (const item of pending) {
-      const response = await fetch(`${url}/events`, {
+      const response = await fetch(`${url}/api/events`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(clinicSubmission(item)),

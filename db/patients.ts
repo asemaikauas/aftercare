@@ -1,10 +1,11 @@
 import { eq, sql } from "drizzle-orm";
 import { getDb } from "./index";
-import { patients } from "./schema";
+import { checkins, patients } from "./schema";
+import { ensureCheckinStorage, hasCheckin } from "./checkins";
 import { seedPatients } from "./seed-data";
 import type { PatientProfile } from "./types";
 
-async function ensureSeeded() {
+export async function ensurePatientStorage() {
   const db = getDb();
   await db.run(sql`
     CREATE TABLE IF NOT EXISTS patients (
@@ -125,13 +126,13 @@ function toProfile(row: typeof patients.$inferSelect): PatientProfile {
 }
 
 export async function listPatients(): Promise<PatientProfile[]> {
-  const db = await ensureSeeded();
+  const db = await ensurePatientStorage();
   const rows = await db.select().from(patients);
   return rows.map(toProfile);
 }
 
 export async function getPatient(id: string): Promise<PatientProfile | undefined> {
-  const db = await ensureSeeded();
+  const db = await ensurePatientStorage();
   const [row] = await db.select().from(patients).where(eq(patients.id, id));
   return row ? toProfile(row) : undefined;
 }
@@ -144,11 +145,19 @@ function nowLabel() {
   return new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 }
 
-export async function submitCheckin(id: string, mood: CheckinMood, note?: string): Promise<PatientProfile | undefined> {
-  const db = await ensureSeeded();
+export async function submitCheckin(
+  id: string,
+  mood: CheckinMood,
+  note?: string,
+  options: { source?: "web" | "native" | "watch"; clientEventId?: string; submittedAt?: string } = {},
+): Promise<PatientProfile | undefined> {
+  const db = await ensurePatientStorage();
+  await ensureCheckinStorage();
   const [row] = await db.select().from(patients).where(eq(patients.id, id));
   if (!row) return undefined;
   const patient = toProfile(row);
+  const checkinId = options.clientEventId ?? crypto.randomUUID();
+  if (await hasCheckin(checkinId)) return patient;
 
   const timelineEntry =
     mood === "good"
@@ -188,9 +197,24 @@ export async function submitCheckin(id: string, mood: CheckinMood, note?: string
     if (note) nextSymptoms = [note, ...patient.symptoms];
   }
 
-  await db
-    .update(patients)
-    .set({
+  const checkinRisk = mood === "not_well" ? "Critical" : mood === "good" ? "Stable" : "Watch";
+  const status = checkinRisk === "Stable" ? "submitted" : "needs_review";
+  const headline = mood === "not_well" ? "New concern reported" : mood === "okay" ? "Discomfort reported" : mood === "voice" ? "Voice check-in received" : "Recovery on track";
+  const checkinSummary = note
+    ? `${patient.name.split(" ")[0]} submitted a ${mood === "voice" ? "voice " : ""}check-in: “${note}”`
+    : mood === "good"
+      ? `${patient.name.split(" ")[0]} reported feeling good with no new symptoms.`
+      : `${patient.name.split(" ")[0]} completed a recovery check-in.`;
+  const flags = mood === "not_well"
+    ? [{ label: "Patient-reported concern", detail: note ?? "New concern reported", tone: "critical" as const }]
+    : mood === "okay"
+      ? [{ label: "Discomfort reported", detail: note ?? "Patient reported some discomfort", tone: "watch" as const }]
+      : [];
+  const answers = [{ label: "Patient report", value: mood === "good" ? "Feeling good" : mood === "not_well" ? "New concern" : mood === "voice" ? "Voice response" : "Some discomfort", trend: "Latest check-in", tone: checkinRisk === "Critical" ? "critical" as const : checkinRisk === "Watch" ? "watch" as const : "stable" as const }];
+  const transcript = note ? [{ speaker: "Patient" as const, text: note }] : [];
+  const wave = Array.from({ length: 20 }, (_, index) => 28 + ((index * 23 + (note?.length ?? 11)) % 62));
+
+  const updatePatient = db.update(patients).set({
       risk: nextRisk,
       score: nextScore,
       alert: nextAlert,
@@ -198,8 +222,24 @@ export async function submitCheckin(id: string, mood: CheckinMood, note?: string
       symptoms: nextSymptoms,
       tasks: nextTasks,
       timeline: nextTimeline,
-    })
-    .where(eq(patients.id, id));
+    }).where(eq(patients.id, id));
+  const insertCheckin = db.insert(checkins).values({
+    id: checkinId,
+    patientId: id,
+    submittedAt: options.submittedAt ?? new Date().toISOString(),
+    source: options.source ?? "web",
+    mood,
+    duration: "—",
+    risk: checkinRisk,
+    status,
+    headline,
+    summary: checkinSummary,
+    transcript,
+    answers,
+    flags,
+    wave,
+  });
+  await db.batch([updatePatient, insertCheckin]);
 
   return getPatient(id);
 }

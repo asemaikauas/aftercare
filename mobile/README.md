@@ -31,22 +31,19 @@ For the browser, run `npm run web`. Browser preview supports the patient flows a
 
 ## Live phone → administrator
 
-Start two additional terminals in the repository root:
+Start the shared CareMinute backend in the repository root:
 
 ```powershell
-# Terminal 1 — local data bridge, trusted network only
-npm run demo:server -- --lan
-
-# Terminal 2 — original administrator app, reachable from the phone
+# Administrator app, API, transcription and D1 database
 npm install
 npm run dev:lan
 ```
 
-Voice check-ins are transcribed by the administrator app on port 3000, so it has to accept connections from the phone: `npm run dev` binds to loopback only and the recording fails with a cancelled fetch. `npm run dev:lan` binds every interface; keep it on a trusted network.
+Voice check-ins and all patient events use the same CareMinute backend on port 3000. `npm run dev` binds to loopback only; `npm run dev:lan` makes the development backend reachable from the phone. Keep local development on a trusted network.
 
-Find the laptop's Wi-Fi IPv4 address using `ipconfig` (`ipconfig getifaddr en0` on macOS). Guest and campus Wi-Fi usually isolate devices from each other, so the phone cannot reach the laptop at all; use a private network or a phone hotspot. In the **phone app → bell → Connect your clinic**, enter `http://YOUR-LAPTOP-IP:4100` and choose **Connect and sync**. `localhost` on a phone means the phone, not the laptop.
+Find the laptop's Wi-Fi IPv4 address using `ipconfig` (`ipconfig getifaddr en0` on macOS). Guest and campus Wi-Fi usually isolate devices from each other, so the phone cannot reach the laptop at all; use a private network or a phone hotspot. In the **phone app → bell → Connect your clinic**, enter `http://YOUR-LAPTOP-IP:3000` and choose **Connect and sync**. `localhost` on a phone means the phone, not the laptop.
 
-On the laptop, open **Voice check-ins** in the administrator dashboard and connect its **Patient app inbox** to `http://localhost:4100`. Complete a check-in on the phone: the administrator inbox refreshes every three seconds. Medication confirmations and care-team messages use the same flow. A browser preview on the laptop can also use `http://localhost:4100`.
+On the laptop, open **Voice check-ins** in the administrator dashboard. Complete a check-in on the phone: the review queue and patient app inbox refresh from the shared database every three seconds. Medication confirmations, care-team messages, and wearable events use the same API.
 
 The bridge defaults to loopback unless `--lan` is passed. Keep it on a trusted network; it is an unauthenticated local service with permissive CORS. Do not deploy it publicly or enter real patient data. Its storage file is gitignored. The inbox is independent of the original static risk queue: submissions do not automatically change clinical risk scores or create clinician replies. Task toggles remain local. There is no EHR connection or production patient backend.
 
@@ -86,13 +83,13 @@ npm run typecheck
 npm test
 npx expo export --platform all --no-bytecode
 
-# Repository root
-npm run test:demo
+# Repository root — renders the app and exercises shared D1 check-in flows
+node --test tests/rendered-html.test.mjs
 ```
 
 `--no-bytecode` validates Android/iOS JavaScript bundles when a sandbox blocks spawning Hermes. It is not a native release build and should not replace a physical-device test. Normal EAS builds should use Hermes bytecode.
 
-Verified during implementation: mobile TypeScript, five model tests, bridge persistence/idempotency/concurrent submission integration test, all three JavaScript exports, browser check-in/save/reload, medication logging, and delivery to the bridge. Native notification delivery and signed installations still need a physical-device check. The root administrator's existing lint errors (MessagesCenter / PatientProfileView), absent Cloudflare worker types, and Windows sandbox `spawn EPERM` production-build restriction are separate from the mobile checks.
+Verified during implementation: mobile TypeScript, model tests, shared-backend persistence and idempotency integration tests, browser check-in/save/reload, medication logging, and delivery to the D1-backed administrator queue. Native notification delivery and signed installations still need a physical-device check. The absent Cloudflare worker types and any local native toolchain restrictions are separate from the mobile checks.
 
 ## Two-minute presentation
 

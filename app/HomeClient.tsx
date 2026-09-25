@@ -7,6 +7,7 @@ import TasksCenter from "./TasksCenter";
 import CheckinsCenter from "./CheckinsCenter";
 import CareTeamCenter from "./CareTeamCenter";
 import { saveSentMessage } from "./message-store";
+import type { DailyCheckin } from "../db/checkins";
 
 type Tab = "Overview" | "Timeline" | "Care plan" | "Records";
 type Modal = "reminder" | "appointment" | "integration" | null;
@@ -29,7 +30,7 @@ function MetricCard({ label, value, change, tone, bars }: { label: string; value
   );
 }
 
-export default function HomeClient({ patients }: { patients: Patient[] }) {
+export default function HomeClient({ patients, checkins }: { patients: Patient[]; checkins: DailyCheckin[] }) {
   const [screen, setScreen] = useState<"overview" | "checkins" | "tasks" | "messages" | "team">("overview");
   const [selectedId, setSelectedId] = useState(patients[0]?.id ?? 0);
   const [riskFilter, setRiskFilter] = useState<"All" | Risk>("All");
@@ -129,7 +130,7 @@ export default function HomeClient({ patients }: { patients: Patient[] }) {
       </aside>
 
       <main className="main" id={screen}>
-        {screen === "messages" ? <MessagesCenter onNotify={notify} /> : screen === "tasks" ? <TasksCenter onNotify={notify} /> : screen === "checkins" ? <CheckinsCenter onNotify={notify} /> : screen === "team" ? <CareTeamCenter onNotify={notify} /> : <>
+        {screen === "messages" ? <MessagesCenter onNotify={notify} /> : screen === "tasks" ? <TasksCenter onNotify={notify} /> : screen === "checkins" ? <CheckinsCenter onNotify={notify} initialCheckins={checkins} /> : screen === "team" ? <CareTeamCenter onNotify={notify} /> : <>
         <header className="topbar">
           <div>
             <p className="eyebrow">Wednesday, 23 September</p>

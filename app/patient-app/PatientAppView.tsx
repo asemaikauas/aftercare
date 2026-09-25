@@ -77,7 +77,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false,
     setSubmittingMood(mood);
     setCheckinError("");
     try {
-      const response = await fetch("/api/checkin", {
+      const response = await fetch("/api/checkins", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ patientId: patient.id, mood, note }),

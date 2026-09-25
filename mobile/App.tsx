@@ -212,9 +212,7 @@ function PatientApp() {
     }
   }
   function transcribeOrigin(): string {
-    const url = new URL(store.bridgeUrl);
-    url.port = "3000";
-    return url.origin;
+    return new URL(store.bridgeUrl).origin;
   }
   async function startVoiceCheckin() {
     setVoiceError("");
@@ -1463,14 +1461,14 @@ function PatientApp() {
                     <Card>
                       <Text style={s.h3}>Connect your clinic</Text>
                       <Text style={s.small}>
-                        Enter the clinic server address from your laptop while
-                        both devices are on the same Wi-Fi.
+                        Enter the CareMinute backend address supplied by your
+                        clinic. Check-ins and transcripts use this one connection.
                       </Text>
                       <TextInput
                         accessibilityLabel="Clinic server URL"
                         autoCapitalize="none"
                         autoCorrect={false}
-                        placeholder="http://192.168.1.10:4100"
+                        placeholder="http://192.168.1.10:3000"
                         placeholderTextColor={C.muted}
                         value={bridge}
                         onChangeText={setBridge}
@@ -1482,13 +1480,13 @@ function PatientApp() {
                         onPress={() =>
                           void run(async () => {
                             const url = bridgeAddress(bridge);
-                            const response = await fetch(`${url}/health`, {
+                            const response = await fetch(`${url}/api/health`, {
                               signal: AbortSignal.timeout(6000),
                             });
                             const data = await response.json();
                             if (
                               !response.ok ||
-                              data.service !== "continuum-demo"
+                              data.service !== "careminute-api"
                             )
                               throw new Error(
                                 "This server is not compatible with CareMinute.",

@@ -33,12 +33,12 @@ test("corrupt persistence is surfaced instead of silently replacing patient data
 });
 test("clinic URL does not accept credentials or non-HTTP schemes", () => {
   assert.equal(
-    bridgeAddress(" http://192.168.1.5:4100/ "),
-    "http://192.168.1.5:4100",
+    bridgeAddress(" http://192.168.1.5:3000/ "),
+    "http://192.168.1.5:3000",
   );
   for (const bad of [
     "javascript:alert(1)",
-    "http://user:password@localhost:4100",
+    "http://user:password@localhost:3000",
     "https://example.com/path",
     "https://example.com/?token=secret",
   ])

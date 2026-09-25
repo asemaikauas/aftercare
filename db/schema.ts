@@ -38,3 +38,31 @@ export const patients = sqliteTable("patients", {
   timeline: text("timeline", { mode: "json" }).notNull(),
   source: text("source").notNull().default("synthea"),
 });
+
+export const checkins = sqliteTable("checkins", {
+  id: text("id").primaryKey(),
+  patientId: text("patient_id").notNull(),
+  submittedAt: text("submitted_at").notNull(),
+  source: text("source").notNull(),
+  mood: text("mood").notNull(),
+  duration: text("duration").notNull().default("—"),
+  risk: text("risk").notNull(),
+  status: text("status").notNull().default("submitted"),
+  headline: text("headline").notNull(),
+  summary: text("summary").notNull(),
+  transcript: text("transcript", { mode: "json" }).notNull(),
+  answers: text("answers", { mode: "json" }).notNull(),
+  flags: text("flags", { mode: "json" }).notNull(),
+  wave: text("wave", { mode: "json" }).notNull(),
+  reviewedAt: text("reviewed_at"),
+  reviewedBy: text("reviewed_by"),
+});
+
+export const patientEvents = sqliteTable("patient_events", {
+  id: text("id").primaryKey(),
+  patientId: text("patient_id").notNull(),
+  patientName: text("patient_name").notNull(),
+  kind: text("kind").notNull(),
+  body: text("body").notNull(),
+  createdAt: text("created_at").notNull(),
+});

@@ -7,6 +7,8 @@ import test, { after, before } from "node:test";
 const projectRoot = fileURLToPath(new URL("..", import.meta.url));
 const port = 41000 + (process.pid % 1000);
 const origin = `http://localhost:${port}`;
+const sharedCheckinId = `integration-web-${process.pid}`;
+const sharedEventId = `integration-native-${process.pid}`;
 let server;
 let serverOutput = "";
 
@@ -104,4 +106,58 @@ test("renders a dedicated patient profile route", async () => {
   assert.match(html, /Personal details/);
   assert.match(html, /Clinical record/);
   assert.match(html, /Patient record/);
+});
+
+test("persists web check-ins in the shared administrator queue", async () => {
+  const created = await fetch(`${origin}/api/checkins`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: sharedCheckinId, patientId: "4", mood: "voice", note: "Integration transcript from the patient app" }),
+  });
+  assert.equal(created.status, 201);
+
+  const list = await fetch(`${origin}/api/checkins`);
+  assert.equal(list.status, 200);
+  const payload = await list.json();
+  const checkin = payload.checkins.find((item) => item.id === sharedCheckinId);
+  assert.equal(checkin.patientId, "4");
+  assert.match(checkin.transcript[0].text, /Integration transcript/);
+
+  const reviewed = await fetch(`${origin}/api/checkins/${sharedCheckinId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ reviewedBy: "Integration Clinician" }),
+  });
+  assert.equal(reviewed.status, 200);
+  assert.equal((await reviewed.json()).status, "reviewed");
+});
+
+test("routes native offline events through the same backend idempotently", async () => {
+  const event = {
+    id: sharedEventId,
+    patientId: "4",
+    patientName: "Mason Weissnat",
+    kind: "check-in",
+    body: 'Voice check-in: "Native integration transcript"',
+    createdAt: new Date().toISOString(),
+  };
+  const first = await fetch(`${origin}/api/events`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(event),
+  });
+  assert.equal(first.status, 201);
+
+  const duplicate = await fetch(`${origin}/api/events`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(event),
+  });
+  assert.equal(duplicate.status, 200);
+  assert.equal((await duplicate.json()).duplicate, true);
+
+  const list = await fetch(`${origin}/api/checkins`);
+  const payload = await list.json();
+  const checkin = payload.checkins.find((item) => item.id === `event-${sharedEventId}`);
+  assert.match(checkin.transcript[0].text, /Native integration transcript/);
 });

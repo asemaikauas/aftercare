@@ -10,10 +10,10 @@ The iOS/Android patient app is in `mobile/`. It includes mood check-ins,
 medication logs, phone reminders, care tasks, care-team messages, and wearable
 insights. See the [mobile setup guide](mobile/README.md).
 
-Run `npm run demo:server -- --lan` for the optional local phone-to-clinic bridge,
-and `npm run dev:lan` so the phone can reach voice transcription on port 3000.
-Incoming submissions appear in **Patient app inbox** inside **Voice check-ins**.
-Use the local bridge only on a trusted network.
+Run `npm run dev:lan` during local device testing so the phone can reach the
+shared CareMinute API and voice transcription on port 3000. Check-ins,
+transcripts, medication logs, messages, and wearable events are stored through
+that same backend and appear automatically in the administrator workspace.
 
 CareMinute is decision-support software, not a diagnostic system or an emergency
 service.

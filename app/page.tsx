@@ -35,7 +35,6 @@ export default function LandingPage() {
         </nav>
 
         <div className={styles.heroCopy}>
-          <p className={styles.kicker}><span /> Connected post-discharge care</p>
           <h1>
             One recovery journey.
             <span>Two connected experiences.</span>
@@ -135,7 +134,6 @@ export default function LandingPage() {
         <div className={styles.sectionHeading}>
           <p className={styles.eyebrow}>Built for both sides of recovery</p>
           <h2>Patients feel supported.<br />Clinics stay ahead.</h2>
-          <p>One shared picture of recovery, presented differently for the people getting better and the teams guiding their care.</p>
         </div>
 
         <article className={`${styles.audienceCard} ${styles.patientCard}`} id="patients">

@@ -26,8 +26,8 @@ For the browser, run `npm run web`. Browser preview supports the patient flows a
   seven-day trends, and four recovery scenarios. A snapshot can be sent to the
   local clinic bridge for staff review.
 - Separate device-local records for all ten dashboard profiles; Settings changes the active profile.
-- Offline outbox: check-ins, medication logs and messages remain local until the clinic bridge acknowledges them. Failed delivery retains the item; explicit Sync retries it.
-- A local clinic bridge writes submissions to disk and exposes them in **administrator → Voice check-ins → Patient app inbox**.
+- Offline outbox: check-ins, medication logs and messages remain local until the clinic server acknowledges them. Failed delivery retains the item; explicit Sync retries it.
+- Submissions are written to the administrator application's shared database and appear in **administrator → Voice check-ins → Patient app inbox**.
 
 ## Live phone → administrator
 
@@ -45,7 +45,7 @@ Find the laptop's Wi-Fi IPv4 address using `ipconfig` (`ipconfig getifaddr en0` 
 
 On the laptop, open **Voice check-ins** in the administrator dashboard. Complete a check-in on the phone: the review queue and patient app inbox refresh from the shared database every three seconds. Medication confirmations, care-team messages, and wearable events use the same API.
 
-The bridge defaults to loopback unless `--lan` is passed. Keep it on a trusted network; it is an unauthenticated local service with permissive CORS. Do not deploy it publicly or enter real patient data. Its storage file is gitignored. The inbox is independent of the original static risk queue: submissions do not automatically change clinical risk scores or create clinician replies. Task toggles remain local. There is no EHR connection or production patient backend.
+Against a deployed dashboard, enter its HTTPS address instead and no local network is needed. The current authentication is demo-only and accepts seeded patient identities, so do not enter real patient data. Task toggles remain local and there is no production EHR connection yet.
 
 The wearable insights area within Watch does not use WHOOP authentication, APIs, SDKs, official brand
 assets, or live device data. Its four scenarios contain fixed reference values

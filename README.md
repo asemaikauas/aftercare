@@ -13,7 +13,9 @@ insights. See the [mobile setup guide](mobile/README.md).
 Run `npm run dev:lan` during local device testing so the phone can reach the
 shared CareMinute API and voice transcription on port 3000. Check-ins,
 transcripts, medication logs, messages, and wearable events are stored through
-that same backend and appear automatically in the administrator workspace.
+that same backend and appear automatically in the administrator workspace. Point
+the phone's **Connect your clinic** setting at `http://YOUR-LAPTOP-IP:3000`.
+The current authentication is demo-only; do not enter real patient data.
 
 CareMinute is decision-support software, not a diagnostic system or an emergency
 service.

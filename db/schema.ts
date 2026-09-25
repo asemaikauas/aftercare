@@ -58,11 +58,13 @@ export const checkins = sqliteTable("checkins", {
   reviewedBy: text("reviewed_by"),
 });
 
+// Updates submitted by the patient phone app. Shared storage is what lets the
+// dashboard and normalized check-in queue see the same event without a bridge.
 export const patientEvents = sqliteTable("patient_events", {
   id: text("id").primaryKey(),
   patientId: text("patient_id").notNull(),
   patientName: text("patient_name").notNull(),
-  kind: text("kind").notNull(),
+  kind: text("kind").notNull(), // "check-in" | "medication" | "message" | "wearable"
   body: text("body").notNull(),
   createdAt: text("created_at").notNull(),
 });

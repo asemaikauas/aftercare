@@ -246,7 +246,7 @@ function PatientApp() {
       const blob = await fileResponse.blob();
       const form = new FormData();
       form.append("audio", blob, "checkin.m4a");
-      const response = await fetch(`${transcribeOrigin()}/api/transcribe`, {
+      const response = await fetch(`${store.bridgeUrl}/api/transcribe`, {
         method: "POST",
         body: form,
         signal: AbortSignal.timeout(30000),

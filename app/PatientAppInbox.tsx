@@ -10,11 +10,12 @@ export default function PatientAppInbox() {
   useEffect(() => {
     let active = true;
     let inFlight = false;
+    const controller = new AbortController();
     async function refresh() {
       if (inFlight) return;
       inFlight = true;
       try {
-        const response = await fetch("/api/events", { cache: "no-store" });
+        const response = await fetch("/api/events", { cache: "no-store", signal: controller.signal });
         const result = (await response.json()) as { events?: PatientEvent[] };
         if (!response.ok || !Array.isArray(result.events)) throw new Error();
         if (active) {
@@ -29,36 +30,26 @@ export default function PatientAppInbox() {
     }
     void refresh();
     const timer = window.setInterval(() => void refresh(), 3000);
-    return () => { active = false; window.clearInterval(timer); };
+    return () => { active = false; controller.abort(); window.clearInterval(timer); };
   }, []);
 
   return (
     <section className="patient-app-inbox" aria-label="Live patient app inbox">
       <div className="patient-inbox-heading">
-        <div>
-          <p className="eyebrow">From the patient app</p>
-          <h2>Patient app inbox</h2>
-          <p role="status">{status}</p>
-        </div>
+        <div><p className="eyebrow">From the patient app</p><h2>Patient app inbox</h2><p role="status">{status}</p></div>
         <span className="review-tag">D1 shared backend</span>
       </div>
       {events.length > 0 ? (
         <div className="patient-inbox-events">
           {events.slice(0, 30).map((event) => (
             <article key={event.id}>
-              <div>
-                <a href={`/patients/${event.patientId}`}><strong>{event.patientName}</strong></a>
-                <span>{event.kind === "wearable" ? "wearable snapshot" : event.kind}</span>
-                <time>{new Date(event.createdAt).toLocaleString()}</time>
-              </div>
+              <div><a href={`/patients/${event.patientId}`}><strong>{event.patientName}</strong></a><span>{event.kind === "wearable" ? "wearable snapshot" : event.kind}</span><time>{new Date(event.createdAt).toLocaleString()}</time></div>
               <p>{event.body}</p>
               <small>{event.kind === "wearable" ? "Wearable data · clinical review required" : "Patient-reported · clinical review required"}</small>
             </article>
           ))}
         </div>
-      ) : (
-        <p className="patient-inbox-empty">New check-ins, medication logs, wearable snapshots, and messages will appear here automatically.</p>
-      )}
+      ) : <p className="patient-inbox-empty">New check-ins, medication logs, wearable snapshots, and messages will appear here automatically.</p>}
     </section>
   );
 }

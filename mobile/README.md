@@ -37,12 +37,14 @@ Start two additional terminals in the repository root:
 # Terminal 1 — local data bridge, trusted network only
 npm run demo:server -- --lan
 
-# Terminal 2 — original administrator app
+# Terminal 2 — original administrator app, reachable from the phone
 npm install
-npm run dev
+npm run dev:lan
 ```
 
-Find the laptop's Wi-Fi IPv4 address using `ipconfig`. In the **phone app → bell → Connect your clinic**, enter `http://YOUR-LAPTOP-IP:4100` and choose **Connect and sync**. `localhost` on a phone means the phone, not the laptop.
+Voice check-ins are transcribed by the administrator app on port 3000, so it has to accept connections from the phone: `npm run dev` binds to loopback only and the recording fails with a cancelled fetch. `npm run dev:lan` binds every interface; keep it on a trusted network.
+
+Find the laptop's Wi-Fi IPv4 address using `ipconfig` (`ipconfig getifaddr en0` on macOS). Guest and campus Wi-Fi usually isolate devices from each other, so the phone cannot reach the laptop at all; use a private network or a phone hotspot. In the **phone app → bell → Connect your clinic**, enter `http://YOUR-LAPTOP-IP:4100` and choose **Connect and sync**. `localhost` on a phone means the phone, not the laptop.
 
 On the laptop, open **Voice check-ins** in the administrator dashboard and connect its **Patient app inbox** to `http://localhost:4100`. Complete a check-in on the phone: the administrator inbox refreshes every three seconds. Medication confirmations and care-team messages use the same flow. A browser preview on the laptop can also use `http://localhost:4100`.
 

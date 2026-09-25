@@ -22,9 +22,14 @@ export default defineConfig(async () => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
-    server: isCodexSeatbeltSandbox
-      ? { watch: { useFsEvents: false, usePolling: true } }
-      : undefined,
+    server: {
+      // The patient app calls /api/transcribe on port 3000 and cannot discover a
+      // fallback port, so fail loudly instead of drifting to 3001.
+      strictPort: true,
+      watch: isCodexSeatbeltSandbox
+        ? { useFsEvents: false, usePolling: true }
+        : undefined,
+    },
     plugins: [
       vinext(),
       cloudflare({

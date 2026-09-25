@@ -10,7 +10,8 @@ The iOS/Android patient app is in `mobile/`. It includes mood check-ins,
 medication logs, phone reminders, care tasks, care-team messages, and wearable
 insights. See the [mobile setup guide](mobile/README.md).
 
-Run `npm run demo:server -- --lan` for the optional local phone-to-clinic bridge.
+Run `npm run demo:server -- --lan` for the optional local phone-to-clinic bridge,
+and `npm run dev:lan` so the phone can reach voice transcription on port 3000.
 Incoming submissions appear in **Patient app inbox** inside **Voice check-ins**.
 Use the local bridge only on a trusted network.
 

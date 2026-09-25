@@ -17,7 +17,7 @@ export function validateEvent(value) {
     value.patientName === patient.name &&
     typeof value.id === "string" &&
     /^[\w-]{1,100}$/.test(value.id) &&
-    ["check-in", "medication", "message"].includes(value.kind) &&
+    ["check-in", "medication", "message", "wearable"].includes(value.kind) &&
     typeof value.body === "string" &&
     value.body.trim().length > 0 &&
     value.body.length <= 3000 &&

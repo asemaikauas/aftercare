@@ -13,7 +13,7 @@ export default function PatientAppInbox() {
   const [connected, setConnected] = useState("");
   const [events, setEvents] = useState<Event[]>([]);
   const [status, setStatus] = useState(
-    "Connect to review check-ins, medication logs and messages from the patient phone app.",
+    "Connect to review check-ins, medication logs, wearable snapshots and messages from the patient phone app.",
   );
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -34,13 +34,13 @@ export default function PatientAppInbox() {
         if (alive) {
           setEvents(result.events.slice().reverse());
           setStatus(
-            "Connected to local demo clinic · refreshes every 3 seconds · synthetic data only",
+            "Connected to clinic · refreshes every 3 seconds",
           );
         }
       } catch {
         if (alive)
           setStatus(
-            "Demo clinic unavailable. Previously received updates remain below; reconnecting automatically.",
+            "Clinic connection unavailable. Previously received updates remain below; reconnecting automatically.",
           );
       } finally {
         inFlight = false;
@@ -74,7 +74,7 @@ export default function PatientAppInbox() {
       setStatus("Connecting to patient updates…");
     } catch {
       setStatus(
-        "Could not connect. Start npm run demo:server in this repository and check the server address.",
+        "Could not connect. Check the clinic server address and try again.",
       );
     } finally {
       setLoading(false);
@@ -88,11 +88,11 @@ export default function PatientAppInbox() {
           <h2>Patient app inbox</h2>
           <p role="status">{status}</p>
         </div>
-        <span className="review-tag">Hackathon demo</span>
+        <span className="review-tag">Local connection</span>
       </div>
       <div className="patient-inbox-connect">
         <input
-          aria-label="Patient demo server address"
+          aria-label="Patient clinic server address"
           value={address}
           onChange={(event) => setAddress(event.target.value)}
           placeholder="http://localhost:4100"
@@ -102,7 +102,7 @@ export default function PatientAppInbox() {
           disabled={loading}
           onClick={() => void connect()}
         >
-          {loading ? "Connecting…" : "Connect demo clinic"}
+          {loading ? "Connecting…" : "Connect clinic"}
         </button>
         {connected && (
           <button
@@ -126,11 +126,15 @@ export default function PatientAppInbox() {
                 <a href={`/patients/${event.patientId}`}>
                   <strong>{event.patientName}</strong>
                 </a>
-                <span>{event.kind}</span>
+                <span>{event.kind === "wearable" ? "wearable snapshot" : event.kind}</span>
                 <time>{new Date(event.createdAt).toLocaleString()}</time>
               </div>
               <p>{event.body}</p>
-              <small>Patient-reported · clinical review required</small>
+              <small>
+                {event.kind === "wearable"
+                  ? "Wearable data · clinical review required"
+                  : "Patient-reported · clinical review required"}
+              </small>
             </article>
           ))}
         </div>

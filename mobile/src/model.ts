@@ -17,7 +17,7 @@ export type Submission = {
   id: string;
   patientId: string;
   patientName: string;
-  kind: "check-in" | "medication" | "message";
+  kind: "check-in" | "medication" | "message" | "wearable";
   createdAt: string;
   body: string;
 };

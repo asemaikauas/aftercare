@@ -29,7 +29,7 @@ export default function PatientProfileView({ patientId }: { patientId: string })
       <main className="missing-patient">
         <span className="brand-mark">a</span>
         <h1>Patient record not found</h1>
-        <p>This synthetic demo record may have moved or does not exist.</p>
+        <p>This patient record may have moved or does not exist.</p>
         <a href="/">Return to patient priority</a>
       </main>
     );
@@ -60,7 +60,7 @@ export default function PatientProfileView({ patientId }: { patientId: string })
         <div className="profile-side-patient">
           <span className={`avatar profile-avatar ${patient.risk.toLowerCase()}`}>{patient.initials}<i /></span>
           <strong>{patient.name}</strong>
-          <small>{patient.mrn} · Demo record</small>
+          <small>{patient.mrn} · Patient record</small>
           <StatusBadge risk={patient.risk} />
         </div>
         <nav className="record-jump-nav" aria-label="Patient profile sections">
@@ -70,10 +70,6 @@ export default function PatientProfileView({ patientId }: { patientId: string })
             </button>
           ))}
         </nav>
-        <div className="profile-sidebar-note">
-          <span>Demo environment</span>
-          <p>All personal and clinical information on this page is synthetic.</p>
-        </div>
         <div className="profile-user"><span className="avatar teal">MN</span><div><strong>Maya Nelson</strong><small>Care manager</small></div><button aria-label="Open account menu">•••</button></div>
       </aside>
 
@@ -94,7 +90,7 @@ export default function PatientProfileView({ patientId }: { patientId: string })
           <div className="hero-identity">
             <span className={`avatar hero-avatar ${patient.risk.toLowerCase()}`}>{patient.initials}<i /></span>
             <div>
-              <div className="hero-name-row"><h2>{patient.name}</h2><StatusBadge risk={patient.risk} /><span className="synthetic-chip">Synthetic patient</span></div>
+              <div className="hero-name-row"><h2>{patient.name}</h2><StatusBadge risk={patient.risk} /></div>
               <p>{patient.age} years · {patient.pronouns} · DOB {patient.dob}</p>
               <small>{patient.mrn} · {patient.service}</small>
             </div>
@@ -123,7 +119,7 @@ export default function PatientProfileView({ patientId }: { patientId: string })
 
                 <section className="profile-ai-card">
                   <div className="profile-card-heading"><div><span className="ai-mark">✦</span><div><h3>AI care brief</h3><p>Current record evidence</p></div></div><span className="review-tag">Review required</span></div>
-                  <p>{urgent ? `Contact ${patient.name.split(" ")[0]} now for a nurse-led assessment. Confirm the reported changes using the clinic protocol and route findings to the on-call clinician.` : patient.risk === "Watch" ? `Review ${patient.name.split(" ")[0]}’s latest check-in today. A reminder or earlier follow-up may be appropriate after staff review.` : `Continue routine monitoring. No additional clinical action is suggested from the current synthetic signals.`}</p>
+                  <p>{urgent ? `Contact ${patient.name.split(" ")[0]} now for a nurse-led assessment. Confirm the reported changes using the clinic protocol and route findings to the on-call clinician.` : patient.risk === "Watch" ? `Review ${patient.name.split(" ")[0]}’s latest check-in today. A reminder or earlier follow-up may be appropriate after staff review.` : `Continue routine monitoring. No additional clinical action is suggested from the current recovery signals.`}</p>
                   <div className="ai-source-line"><span>Based on</span><b>Patient check-ins</b><b>Wearables</b><b>Care plan</b><b>Clinical record</b></div>
                   <div className="ai-profile-actions"><button type="button" onClick={openMessage}>Draft a message</button><button type="button" onClick={() => setActiveTab("Documents & history")}>See source timeline</button></div>
                 </section>
@@ -148,8 +144,8 @@ export default function PatientProfileView({ patientId }: { patientId: string })
                   <div className="episode-grid"><div><span>Procedure</span><strong>{patient.procedure}</strong></div><div><span>Procedure date</span><strong>{patient.procedureDate}</strong></div><div><span>Discharge date</span><strong>{patient.dischargeDate}</strong></div><div><span>Service line</span><strong>{patient.service}</strong></div></div>
                 </section>
                 <div className="clinical-columns">
-                  <section className="profile-card clinical-card"><div className="profile-card-heading plain"><div><h3>Conditions</h3><p>Relevant history</p></div><button type="button" onClick={() => notify("Condition editor is disabled in demo mode")}>Edit</button></div>{patient.conditions.map((condition) => <div className="clinical-list-row" key={condition}><span className="condition-mark" /><strong>{condition}</strong><small>Confirmed</small></div>)}</section>
-                  <section className="profile-card clinical-card"><div className="profile-card-heading plain"><div><h3>Allergies</h3><p>Care-team record</p></div><button type="button" onClick={() => notify("Allergy editor is disabled in demo mode")}>Edit</button></div>{patient.allergies.map((allergy) => <div className="clinical-list-row" key={allergy}><span className="allergy-mark">!</span><strong>{allergy}</strong><small>Confirmed</small></div>)}</section>
+                  <section className="profile-card clinical-card"><div className="profile-card-heading plain"><div><h3>Conditions</h3><p>Relevant history</p></div><button type="button" onClick={() => notify("Condition editing is not available")}>Edit</button></div>{patient.conditions.map((condition) => <div className="clinical-list-row" key={condition}><span className="condition-mark" /><strong>{condition}</strong><small>Confirmed</small></div>)}</section>
+                  <section className="profile-card clinical-card"><div className="profile-card-heading plain"><div><h3>Allergies</h3><p>Care-team record</p></div><button type="button" onClick={() => notify("Allergy editing is not available")}>Edit</button></div>{patient.allergies.map((allergy) => <div className="clinical-list-row" key={allergy}><span className="allergy-mark">!</span><strong>{allergy}</strong><small>Confirmed</small></div>)}</section>
                 </div>
                 <section className="profile-card medication-card"><div className="profile-card-heading plain"><div><h3>Current medications</h3><p>Reconciled against the discharge plan</p></div><span className="source-chip">{patient.medications.length} active</span></div>{patient.medications.map((medication) => <div className="medication-row" key={medication.name}><span className="med-icon">Rx</span><div><strong>{medication.name}</strong><small>{medication.detail}</small></div><b>{medication.status}</b><button type="button" onClick={() => notify(`${medication.name} source record opened`)}>View source</button></div>)}</section>
                 <section className="profile-card"><div className="profile-card-heading plain"><div><h3>Reported symptoms</h3><p>Latest patient-submitted information</p></div><span className="source-chip">Patient check-in</span></div><div className="large-tag-list">{patient.symptoms.map((symptom) => <span key={symptom}>{symptom}</span>)}</div></section>
@@ -169,7 +165,7 @@ export default function PatientProfileView({ patientId }: { patientId: string })
 
             {activeTab === "Documents & history" && (
               <>
-                <section className="profile-card documents-card"><div className="profile-card-heading plain"><div><h3>Patient documents</h3><p>Recovery records</p></div><button type="button" onClick={() => notify("Upload is disabled for this synthetic demo")}>＋ Add document</button></div><div className="document-grid">{patient.documents.map((document) => <button key={document.name} type="button" onClick={() => notify(`${document.name} opened in preview mode`)}><span className="document-icon">▤</span><div><strong>{document.name}</strong><small>{document.type} · {document.date}</small></div><em>Open →</em></button>)}</div></section>
+                <section className="profile-card documents-card"><div className="profile-card-heading plain"><div><h3>Patient documents</h3><p>Recovery records</p></div><button type="button" onClick={() => notify("Document upload is not available")}>＋ Add document</button></div><div className="document-grid">{patient.documents.map((document) => <button key={document.name} type="button" onClick={() => notify(`${document.name} opened in preview mode`)}><span className="document-icon">▤</span><div><strong>{document.name}</strong><small>{document.type} · {document.date}</small></div><em>Open →</em></button>)}</div></section>
                 <section className="profile-card history-card"><div className="profile-card-heading plain"><div><h3>Activity history</h3><p>Patient and care-team events</p></div><button type="button" onClick={() => notify("Audit trail exported")}>Export audit trail</button></div><div className="full-timeline">{patient.timeline.map((event, index) => <div className="full-timeline-row" key={`${event.time}-${event.title}`}><div className="timeline-rail"><span className={event.tone}>{event.tone === "critical" ? "!" : event.tone === "watch" ? "↗" : event.tone === "stable" ? "✓" : "•"}</span>{index < patient.timeline.length - 1 && <i />}</div><time>{event.time}</time><div><strong>{event.title}</strong><p>{event.detail}</p><small>{event.source}</small></div></div>)}</div></section>
               </>
             )}
@@ -177,7 +173,7 @@ export default function PatientProfileView({ patientId }: { patientId: string })
 
           <aside className="profile-aside">
             <section className="profile-card personal-record">
-              <div className="profile-card-heading plain"><div><h3>Personal details</h3><p>Patient record</p></div><button type="button" onClick={() => notify("Personal detail editing is disabled in demo mode")}>Edit</button></div>
+              <div className="profile-card-heading plain"><div><h3>Personal details</h3><p>Patient record</p></div><button type="button" onClick={() => notify("Personal detail editing is not available")}>Edit</button></div>
               <dl><div><dt>Full name</dt><dd>{patient.name}</dd></div><div><dt>Date of birth</dt><dd>{patient.dob} · {patient.age} years</dd></div><div><dt>Sex</dt><dd>{patient.sex}</dd></div><div><dt>Pronouns</dt><dd>{patient.pronouns}</dd></div><div><dt>Preferred language</dt><dd>{patient.language}</dd></div><div><dt>Phone</dt><dd>{patient.phone}</dd></div><div><dt>Email</dt><dd>{patient.email}</dd></div><div><dt>Home address</dt><dd>{patient.address}</dd></div><div><dt>Emergency contact</dt><dd>{patient.emergencyContact}</dd></div></dl>
             </section>
 

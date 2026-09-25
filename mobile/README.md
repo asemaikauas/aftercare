@@ -22,6 +22,9 @@ For the browser, run `npm run web`. Browser preview supports the patient flows a
 - Medication: the dashboard's medication list, one daily confirmation per medicine, and configurable daily care-plan notifications.
 - My plan: the dashboard's care tasks and follow-up appointment, local task completion, check-in journal, and shareable summary.
 - Care team: the dashboard's named clinicians and patient messages.
+- Wearable: an interactive WHOOP-style simulation with recovery, sleep, strain,
+  HRV, resting heart rate, seven-day trends, and four demo scenarios. A simulated
+  snapshot can be sent to the local clinic bridge for staff review.
 - Separate device-local records for all ten synthetic dashboard profiles; Settings changes the demo profile.
 - Offline outbox: check-ins, medication logs and messages remain local until the demo bridge acknowledges them. Failed delivery retains the item; explicit Sync retries it.
 - A local clinic bridge writes submissions to disk and exposes them in **administrator → Voice check-ins → Patient app inbox**.
@@ -44,6 +47,12 @@ Find the laptop's Wi-Fi IPv4 address using `ipconfig`. In the **phone app → be
 On the laptop, open **Voice check-ins** in the administrator dashboard and connect its **Patient app inbox** to `http://localhost:4100`. Complete a check-in on the phone: the administrator inbox refreshes every three seconds. Medication confirmations and care-team messages use the same flow. A browser preview on the laptop can also use `http://localhost:4100`.
 
 The bridge defaults to loopback unless `--lan` is passed. Keep it on a trusted network; it is an unauthenticated, synthetic-only demo service with permissive CORS. Do not deploy it publicly or enter real patient data. Its file is `work/demo-clinic/events.json` (gitignored). The inbox is independent of the original static risk queue: submissions do not automatically change clinical risk scores or create clinician replies. Task toggles remain local. There is no real sign-in, EHR connection, or production patient backend.
+
+The Wearable area is a product simulation, not a WHOOP integration. It does not
+use WHOOP authentication, APIs, SDKs, official brand assets, or live device data. Its four
+scenarios contain fixed synthetic values intended to demonstrate how wearable
+context could complement—not replace—patient-reported symptoms and clinical
+review.
 
 If the existing admin app cannot start, the patient app remains usable offline. The new bridge has no third-party runtime dependencies and can still receive data. Hosted HTTPS dashboards cannot fetch an HTTP localhost bridge; use the dashboard locally for this demo.
 
@@ -90,6 +99,8 @@ Verified during implementation: mobile TypeScript, five model tests, bridge pers
 2. Select a face, choose pain, add a short note and complete the check-in.
 3. Show the new entry in the administrator Patient app inbox.
 4. Record a medication, then demonstrate a five-second notification on the phone.
-5. Open My plan and Care team: “A daily connection between the patient and their care team.”
+5. Open Wearable, switch from “On track” to “Low recovery,” and share the
+   synthetic snapshot with the clinic inbox.
+6. Open My plan and Care team: “A daily connection between the patient and their care team.”
 
 Describe this as a working synthetic-data prototype. It does not diagnose, triage automatically, monitor emergencies, or replace a prescribed care plan.

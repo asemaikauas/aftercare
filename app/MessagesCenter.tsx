@@ -78,7 +78,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
     <div className="messages-page">
       <header className="messages-header">
         <div><p className="eyebrow">Care coordination</p><h1>Messages</h1><p className="subtitle">Patient conversations and follow-ups.</p></div>
-        <div className="messages-header-actions"><span className="sync-pill"><i />Messaging connected <b>Demo</b></span><button className="primary-button" type="button" onClick={() => { setFilter("Sent"); setDraft("Hi, this is Maya from Northbridge Clinic. I’m checking in about your recovery today."); }}>＋ New message</button></div>
+        <div className="messages-header-actions"><span className="sync-pill"><i />Messaging connected <b>Active</b></span><button className="primary-button" type="button" onClick={() => { setFilter("Sent"); setDraft("Hi, this is Maya from Northbridge Clinic. I’m checking in about your recovery today."); }}>＋ New message</button></div>
       </header>
 
       <section className="message-summary" aria-label="Message summary">
@@ -103,7 +103,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
         <article className="conversation-panel">
           {selectedPatient ? <>
             <header className="conversation-header"><div className="conversation-person"><span className="avatar large">{selectedPatient.initials}<i /></span><div><h2>{selectedPatient.patientName}</h2><p>Patient #{selectedPatient.patientId} · Post-discharge recovery</p></div></div><div><a href={`/patients/${selectedPatient.patientId}`}>Open profile</a><button aria-label="More conversation options">•••</button></div></header>
-            <div className="conversation-notice"><span>i</span>Demo messages are not sent to real patients.</div>
+            <div className="conversation-notice"><span>i</span>Review clinical instructions before sending.</div>
             <div className="message-history" aria-live="polite">
               <div className="history-day"><span>Recovery conversation</span></div>
               {selectedThread.map((message) => <div key={message.id} className={`message-bubble-row ${message.direction}`}><div className="message-bubble"><div><strong>{message.direction === "sent" ? "You" : message.patientName}</strong><time>{formatMessageTime(message.sentAt)}</time></div><p>{message.body}</p><footer><span>{message.channel}</span><span>{message.status}{message.direction === "sent" ? " ✓" : ""}</span></footer></div></div>)}
@@ -112,7 +112,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
           </> : <div className="conversation-empty"><span>□</span><h2>Select a conversation</h2><p>Choose a patient thread to review sent messages and replies.</p></div>}
         </article>
       </section>
-      <footer className="page-foot"><span>aftercare · Messages stored on this device</span><span>Synthetic data · Not for emergency use</span></footer>
+      <footer className="page-foot"><span>aftercare · Messages stored on this device</span><span>Not for emergency use</span></footer>
     </div>
   );
 }

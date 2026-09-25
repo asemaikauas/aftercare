@@ -136,7 +136,7 @@ export default function TasksCenter({ onNotify }: { onNotify: (message: string) 
         </aside>
       </section>
 
-      <footer className="page-foot"><span>aftercare · Synthetic data</span><span>Not for emergency use</span></footer>
+      <footer className="page-foot"><span>aftercare · Care operations</span><span>Not for emergency use</span></footer>
     </div>
   );
 }

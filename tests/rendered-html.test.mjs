@@ -33,7 +33,7 @@ test("server-renders the aftercare clinic dashboard", async () => {
   assert.match(html, /Patient priority/);
   assert.match(html, /Sophia Reed/);
   assert.match(html, /AI care brief/);
-  assert.match(html, /Synthetic patient data/);
+  assert.match(html, /Patient recovery operations/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -56,5 +56,5 @@ test("renders a dedicated patient profile route", async () => {
   assert.match(html, /Sophia Reed/);
   assert.match(html, /Personal details/);
   assert.match(html, /Clinical record/);
-  assert.match(html, /Synthetic patient/);
+  assert.match(html, /Patient record/);
 });

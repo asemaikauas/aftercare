@@ -27,6 +27,12 @@ import {
 } from "./src/model";
 import { useStore } from "./src/useStore";
 import {
+  wearableScenario,
+  wearableScenarios,
+  wearableSnapshot,
+  type WearableScenarioId,
+} from "./src/wearable";
+import {
   disableReminders,
   enableReminders,
   getPushToken,
@@ -45,7 +51,7 @@ import {
   type IconName,
 } from "./src/ui";
 
-type Tab = "Today" | "Medication" | "My plan" | "Care team";
+type Tab = "Today" | "Medication" | "My plan" | "Wearable" | "Care team";
 type Sheet = "checkin" | "settings" | "history" | null;
 const moods = ["Very low", "Low", "Okay", "Good", "Great"];
 const symptomsList = [
@@ -60,6 +66,7 @@ const tabs: { name: Tab; icon: IconName }[] = [
   { name: "Today", icon: "home" },
   { name: "Medication", icon: "pill" },
   { name: "My plan", icon: "plan" },
+  { name: "Wearable", icon: "activity" },
   { name: "Care team", icon: "heart" },
 ];
 const formatTime = (date: string) =>
@@ -92,6 +99,8 @@ function PatientApp() {
   const [time, setTime] = useState("09:00");
   const [bridge, setBridge] = useState("");
   const [message, setMessage] = useState("");
+  const [wearableScenarioId, setWearableScenarioId] =
+    useState<WearableScenarioId>("on-track");
   const [now, setNow] = useState(new Date());
   const patient =
     patientProfiles.find((p) => p.id === store.patientId) ?? patientProfiles[0];
@@ -107,6 +116,13 @@ function PatientApp() {
   const completed = (todayCheckin ? 1 : 0) + dosesDone + tasksDone;
   const total = 1 + patient.medications.length + patient.tasks.length;
   const pending = store.outbox.filter((x) => x.patientId === patient.id).length;
+  const wearable = wearableScenario(wearableScenarioId);
+  const wearableColor =
+    wearable.tone === "green"
+      ? "#B8F23D"
+      : wearable.tone === "red"
+        ? "#FF5D68"
+        : "#F5C84C";
 
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 30000);
@@ -169,13 +185,13 @@ function PatientApp() {
   async function deliveryNotice(savedMessage: string) {
     if (!store.bridgeUrl) {
       setNotice(
-        `${savedMessage} Saved on this device. Connect the demo clinic in Settings to share.`,
+        `${savedMessage} Saved on this device. Connect your clinic in Settings to share.`,
       );
       return;
     }
     try {
       await sync(store.bridgeUrl);
-      setNotice(`${savedMessage} Delivered to the demo clinic inbox.`);
+      setNotice(`${savedMessage} Delivered to the clinic inbox.`);
     } catch {
       setNotice(
         `${savedMessage} Saved on this device; clinic connection unavailable. Tap Sync in Settings to retry.`,
@@ -232,7 +248,7 @@ function PatientApp() {
       (p) => ({ ...p, doses: { ...p.doses, [key]: new Date().toISOString() } }),
       event(
         "medication",
-        `${name}: patient recorded taken today. This is a daily demo log, not dose verification.`,
+        `${name}: patient recorded taken today. This is a daily record, not dose verification.`,
       ),
     );
     await deliveryNotice("Medication recorded.");
@@ -243,9 +259,16 @@ function PatientApp() {
         `${c.date}: feeling ${moods[c.mood - 1]}, pain ${c.pain}/10; ${c.symptoms.join(", ") || "no symptoms selected"}${c.notes ? `; ${c.notes}` : ""}`,
     );
     await Share.share({
-      title: "aftercare demo recovery summary",
-      message: `aftercare • synthetic demo record\n${patient.name}\n${patient.procedure}\n\n${lines.join("\n") || "No check-ins recorded yet."}`,
+      title: "aftercare recovery summary",
+      message: `aftercare recovery record\n${patient.name}\n${patient.procedure}\n\n${lines.join("\n") || "No check-ins recorded yet."}`,
     });
+  }
+  async function shareWearableSnapshot() {
+    await savePatient(
+      (value) => value,
+      event("wearable", wearableSnapshot(wearable)),
+    );
+    await deliveryNotice("Wearable snapshot shared.");
   }
   if (!ready)
     return (
@@ -355,6 +378,37 @@ function PatientApp() {
                   </Text>
                 </View>
               </View>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Open wearable insights"
+                onPress={() => setTab("Wearable")}
+              >
+                <Card style={{ backgroundColor: "#121715", borderColor: "#121715" }}>
+                  <View style={s.between}>
+                    <View style={[s.row, { gap: 9 }]}>
+                      <Icon name="activity" color="#B8F23D" />
+                      <Text style={[s.h3, { color: "white" }]}>Wearable insights</Text>
+                    </View>
+                    <Icon name="chevron" color="white" size={18} />
+                  </View>
+                  <View style={s.between}>
+                    <View style={s.grow}>
+                      <Text style={[s.small, { color: "#AEBBB5" }]}>Recovery</Text>
+                      <Text style={[s.h1, { color: wearableColor, fontSize: 31 }]}>
+                        {wearable.recovery}%
+                      </Text>
+                    </View>
+                    <View style={s.grow}>
+                      <Text style={[s.small, { color: "#AEBBB5" }]}>Sleep</Text>
+                      <Text style={[s.h2, { color: "white" }]}>{wearable.sleep}%</Text>
+                    </View>
+                    <View style={s.grow}>
+                      <Text style={[s.small, { color: "#AEBBB5" }]}>Strain</Text>
+                      <Text style={[s.h2, { color: "white" }]}>{wearable.strain.toFixed(1)}</Text>
+                    </View>
+                  </View>
+                </Card>
+              </Pressable>
               <Card>
                 <View style={s.between}>
                   <Text style={s.h2}>How are you feeling?</Text>
@@ -539,7 +593,7 @@ function PatientApp() {
                 />
               </Card>
               <Text style={s.small}>
-                The demo record does not include complete dose schedules. This
+                This record does not include complete dose schedules. This
                 log does not change your prescription or tell you when another
                 dose is due.
               </Text>
@@ -642,7 +696,7 @@ function PatientApp() {
                   </View>
                 </View>
                 <Text style={s.small}>
-                  Appointment from the clinic’s synthetic demo record.
+                  Appointment from your clinic record.
                 </Text>
               </Card>
               <Section
@@ -677,6 +731,130 @@ function PatientApp() {
                   />
                 </Card>
               )}
+            </>
+          )}
+          {tab === "Wearable" && (
+            <>
+              <View style={{ gap: 7 }}>
+                <Text style={s.eyebrow}>CONNECTED RECOVERY</Text>
+                <Text style={s.h1}>Your wearable story.</Text>
+                <Text style={s.body}>
+                  Explore how recovery, sleep and strain could support a richer
+                  conversation with your care team.
+                </Text>
+              </View>
+              <View style={s.wrap}>
+                {wearableScenarios.map((scenario) => (
+                  <Pressable
+                    key={scenario.id}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: scenario.id === wearable.id }}
+                    onPress={() => setWearableScenarioId(scenario.id)}
+                    style={[
+                      s.chip,
+                      scenario.id === wearable.id && {
+                        backgroundColor: "#1C2521",
+                        borderColor: "#1C2521",
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        s.small,
+                        { fontWeight: "700" },
+                        scenario.id === wearable.id && { color: "white" },
+                      ]}
+                    >
+                      {scenario.shortLabel}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+              <View style={s.wearableHero}>
+                <View style={s.between}>
+                  <View>
+                    <Text style={[s.eyebrow, { color: "#B8F23D" }]}>WEARABLE INSIGHTS</Text>
+                    <Text style={[s.small, { color: "#AEBBB5", marginTop: 5 }]}>Recovery, sleep and strain</Text>
+                  </View>
+                  <Icon name="activity" color="#B8F23D" />
+                </View>
+                <View style={[s.row, { alignItems: "center", gap: 20 }]}>
+                  <View style={[s.wearableScore, { borderColor: wearableColor }]}>
+                    <Text style={[s.h1, { color: "white", fontSize: 31 }]}>{wearable.recovery}</Text>
+                    <Text style={[s.small, { color: "#AEBBB5" }]}>RECOVERY</Text>
+                  </View>
+                  <View style={s.grow}>
+                    <Text style={[s.h2, { color: "white", lineHeight: 27 }]}>{wearable.label}</Text>
+                    <Text style={[s.small, { color: "#AEBBB5", marginTop: 7 }]}>{wearable.headline}</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={s.wearableMetricGrid}>
+                {[
+                  ["Sleep performance", `${wearable.sleep}%`, wearable.sleepHours],
+                  ["Day strain", wearable.strain.toFixed(1), "0–21 scale"],
+                  ["Heart-rate variability", `${wearable.hrv} ms`, "Overnight average"],
+                  ["Resting heart rate", `${wearable.restingHeartRate} bpm`, "Recent overnight"],
+                ].map(([label, value, detail]) => (
+                  <View style={s.wearableMetric} key={label}>
+                    <Text style={s.small}>{label}</Text>
+                    <Text style={[s.h2, { fontSize: 23 }]}>{value}</Text>
+                    <Text style={s.small}>{detail}</Text>
+                  </View>
+                ))}
+              </View>
+              <Card>
+                <View style={s.between}>
+                  <View>
+                    <Text style={s.h3}>Seven-day recovery</Text>
+                    <Text style={s.small}>Oldest to today</Text>
+                  </View>
+                  <Text style={[s.h2, { color: wearableColor }]}>{wearable.recovery}%</Text>
+                </View>
+                <View style={s.trend} accessibilityLabel={`Seven-day recovery trend: ${wearable.recoveryTrend.join(", ")} percent`}>
+                  {wearable.recoveryTrend.map((value, index) => (
+                    <View
+                      key={`${value}-${index}`}
+                      style={[
+                        s.trendBar,
+                        {
+                          height: `${value}%`,
+                          backgroundColor: index === 6 ? wearableColor : "#D8E1DA",
+                        },
+                      ]}
+                    />
+                  ))}
+                </View>
+                <View style={s.between}>
+                  {['M', 'T', 'W', 'T', 'F', 'S', 'Today'].map((day, index) => (
+                    <Text key={`${day}-${index}`} style={[s.small, { fontSize: 10 }]}>{day}</Text>
+                  ))}
+                </View>
+              </Card>
+              <Card style={{ backgroundColor: C.mint }}>
+                <View style={s.row}>
+                  <View style={[s.badge, { backgroundColor: C.paper }]}>
+                    <Icon name="activity" />
+                  </View>
+                  <Text style={[s.h3, s.grow]}>What these signals could mean</Text>
+                </View>
+                <Text style={s.body}>{wearable.explanation}</Text>
+                <View style={s.divider} />
+                <Text style={s.small}>{wearable.guidance}</Text>
+              </Card>
+              <Button
+                title={store.bridgeUrl ? "Share snapshot with clinic" : "Save snapshot"}
+                icon="arrow"
+                disabled={busy}
+                onPress={() => void run(shareWearableSnapshot)}
+              />
+              <View style={[s.notice, { backgroundColor: C.amber }]}>
+                <Text style={s.h3}>Use wearable data with care</Text>
+                <Text style={s.small}>
+                  Wearable signals do not diagnose a condition and should be
+                  reviewed alongside symptoms and your care plan.
+                </Text>
+              </View>
             </>
           )}
           {tab === "Care team" && (
@@ -734,13 +912,13 @@ function PatientApp() {
                 />
                 <Text style={s.small}>
                   {store.bridgeUrl
-                    ? "Sent to the demo clinic inbox when connected."
-                    : "Saved on this device until you connect the demo clinic."}{" "}
+                    ? "Sent to the clinic inbox when connected."
+                    : "Saved on this device until you connect your clinic."}{" "}
                   This inbox is not monitored for emergencies.
                 </Text>
                 <Button
                   title={
-                    store.bridgeUrl ? "Send to demo clinic" : "Save message"
+                    store.bridgeUrl ? "Send to clinic" : "Save message"
                   }
                   icon="arrow"
                   disabled={!message.trim() || busy}
@@ -777,7 +955,7 @@ function PatientApp() {
                       {formatTime(m.createdAt)} ·{" "}
                       {store.outbox.some((x) => x.id === m.id)
                         ? "Saved on device · not delivered"
-                        : "Delivered to demo clinic"}
+                        : "Delivered to clinic"}
                     </Text>
                   </Card>
                 ))}
@@ -792,10 +970,9 @@ function PatientApp() {
           )}
           <View style={{ alignItems: "center", gap: 4, marginTop: 3 }}>
             <Text style={[s.small, { fontSize: 10, letterSpacing: 1 }]}>
-              aftercare · FISHTANK DEMO
+              aftercare
             </Text>
             <Text style={[s.small, { fontSize: 11 }]}>
-              Synthetic patient ·{" "}
               {pending
                 ? `${pending} updates saved on device`
                 : "Your recovery space"}
@@ -1026,11 +1203,10 @@ function PatientApp() {
                 {sheet === "settings" && (
                   <>
                     <Card>
-                      <Text style={s.eyebrow}>DEMO PATIENT</Text>
+                      <Text style={s.eyebrow}>PATIENT PROFILE</Text>
                       <Text style={s.h3}>{patient.name}</Text>
                       <Text style={s.small}>
-                        These profiles come from the administrator dashboard.
-                        Changing profiles does not sign in to a real account.
+                        Choose the patient profile connected to this device.
                       </Text>
                       <View style={s.wrap}>
                         {patientProfiles.map((p) => (
@@ -1135,21 +1311,20 @@ function PatientApp() {
                           void run(async () => {
                             await testReminder();
                             setNotice(
-                              "Demo notification scheduled in 5 seconds.",
+                              "Notification scheduled in 5 seconds.",
                             );
                           })
                         }
                       />
                     </Card>
                     <Card>
-                      <Text style={s.h3}>Connect the demo clinic</Text>
+                      <Text style={s.h3}>Connect your clinic</Text>
                       <Text style={s.small}>
-                        For the hackathon: enter the demo server address from
-                        your laptop, on the same Wi-Fi. Only synthetic data is
-                        sent.
+                        Enter the clinic server address from your laptop while
+                        both devices are on the same Wi-Fi.
                       </Text>
                       <TextInput
-                        accessibilityLabel="Demo clinic server URL"
+                        accessibilityLabel="Clinic server URL"
                         autoCapitalize="none"
                         autoCorrect={false}
                         placeholder="http://192.168.1.10:4100"
@@ -1173,7 +1348,7 @@ function PatientApp() {
                               data.service !== "continuum-demo"
                             )
                               throw new Error(
-                                "This is not the aftercare demo server.",
+                                "This server is not compatible with aftercare.",
                               );
                             await update((value) => ({
                               ...value,
@@ -1182,14 +1357,14 @@ function PatientApp() {
                             setBridge(url);
                             const count = await sync(url);
                             setNotice(
-                              `Connected. ${count} updates delivered to the demo clinic.`,
+                              `Connected. ${count} updates delivered to the clinic.`,
                             );
                           })
                         }
                       />
                       {store.bridgeUrl && (
                         <Button
-                          title="Disconnect demo clinic"
+                          title="Disconnect clinic"
                           secondary
                           disabled={busy}
                           onPress={() =>
@@ -1208,7 +1383,7 @@ function PatientApp() {
                       )}
                       <Text style={s.small}>
                         {store.outbox.length} updates awaiting delivery across
-                        demo profiles.
+                        patient profiles.
                       </Text>
                     </Card>
                     <Card>
@@ -1216,7 +1391,7 @@ function PatientApp() {
                       <Text style={s.small}>
                         For an installed build linked to your Expo project.
                         Register the device, then use the Expo push testing tool
-                        to send a demo notification.
+                        to send a notification.
                       </Text>
                       <Button
                         title="Register & share push token"
@@ -1269,7 +1444,7 @@ function PatientApp() {
                       </Text>
                     )}
                     <Button
-                      title="Share demo summary"
+                      title="Share summary"
                       secondary
                       disabled={!state.checkins.length || busy}
                       icon="arrow"

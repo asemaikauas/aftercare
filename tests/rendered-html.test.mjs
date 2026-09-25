@@ -22,13 +22,13 @@ async function render(pathname = "/") {
   );
 }
 
-test("server-renders the Continuum clinic dashboard", async () => {
+test("server-renders the aftercare clinic dashboard", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Continuum — Post-discharge care command center<\/title>/i);
+  assert.match(html, /<title>aftercare — Post-discharge care command center<\/title>/i);
   assert.match(html, /Good morning, Maya/);
   assert.match(html, /Patient priority/);
   assert.match(html, /Sophia Reed/);

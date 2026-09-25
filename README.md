@@ -1,6 +1,12 @@
-# Continuum Clinic Demo
+# Aftercare Clinic Demo
 
-Continuum is a clinic-side command center for post-discharge care. It helps one care manager understand which patients need attention, why they were prioritized, and what approved follow-up action can happen next.
+## Patient mobile app — FishTank
+
+The iOS/Android patient app is in `mobile/`. It reuses this dashboard's synthetic patient profiles and includes mood check-ins, medication logs, phone reminders, care tasks, and care-team messages. See [mobile setup and demo guide](mobile/README.md).
+
+Run `npm run demo:server -- --lan` for the optional local phone-to-clinic bridge. Incoming submissions appear in the new **Patient app inbox** inside **Voice check-ins**. The bridge is for synthetic demo data on a trusted local network only.
+
+Aftercare is a clinic-side command center for post-discharge care. It helps one care manager understand which patients need attention, why they were prioritized, and what approved follow-up action can happen next.
 
 This repository is a functional front-end demo using synthetic patient data. It is decision-support software, not a diagnostic system or an emergency service.
 

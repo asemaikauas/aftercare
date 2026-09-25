@@ -26,29 +26,29 @@ For the browser, run `npm run web`. Browser preview supports the patient flows a
   seven-day trends, and four recovery scenarios. A snapshot can be sent to the
   local clinic bridge for staff review.
 - Separate device-local records for all ten dashboard profiles; Settings changes the active profile.
-- Offline outbox: check-ins, medication logs and messages remain local until the clinic bridge acknowledges them. Failed delivery retains the item; explicit Sync retries it.
-- A local clinic bridge writes submissions to disk and exposes them in **administrator → Voice check-ins → Patient app inbox**.
+- Offline outbox: check-ins, medication logs and messages remain local until the clinic server acknowledges them. Failed delivery retains the item; explicit Sync retries it.
+- Submissions are written to the administrator application's shared database and appear in **administrator → Voice check-ins → Patient app inbox**.
 
 ## Live phone → administrator
 
-Start two additional terminals in the repository root:
+The phone talks to the administrator application itself: submissions are stored in the shared database through `POST /api/events`, and the dashboard reads them back from the same database. No separate bridge process is involved.
+
+Start the administrator app in the repository root so the phone can reach it:
 
 ```powershell
-# Terminal 1 — local data bridge, trusted network only
-npm run demo:server -- --lan
-
-# Terminal 2 — original administrator app, reachable from the phone
 npm install
 npm run dev:lan
 ```
 
-Voice check-ins are transcribed by the administrator app on port 3000, so it has to accept connections from the phone: `npm run dev` binds to loopback only and the recording fails with a cancelled fetch. `npm run dev:lan` binds every interface; keep it on a trusted network.
+`npm run dev` binds to loopback only, so the phone's transcription and delivery requests fail with a cancelled fetch. `npm run dev:lan` binds every interface; keep it on a trusted network.
 
-Find the laptop's Wi-Fi IPv4 address using `ipconfig` (`ipconfig getifaddr en0` on macOS). Guest and campus Wi-Fi usually isolate devices from each other, so the phone cannot reach the laptop at all; use a private network or a phone hotspot. In the **phone app → bell → Connect your clinic**, enter `http://YOUR-LAPTOP-IP:4100` and choose **Connect and sync**. `localhost` on a phone means the phone, not the laptop.
+Find the laptop's Wi-Fi IPv4 address using `ipconfig` (`ipconfig getifaddr en0` on macOS). Guest and campus Wi-Fi usually isolate devices from each other, so the phone cannot reach the laptop at all; use a private network or a phone hotspot. In the **phone app → bell → Connect your clinic**, enter `http://YOUR-LAPTOP-IP:3000` and choose **Connect and sync**. `localhost` on a phone means the phone, not the laptop. Against a deployed dashboard, enter its HTTPS address instead and no local network is needed.
 
-On the laptop, open **Voice check-ins** in the administrator dashboard and connect its **Patient app inbox** to `http://localhost:4100`. Complete a check-in on the phone: the administrator inbox refreshes every three seconds. Medication confirmations and care-team messages use the same flow. A browser preview on the laptop can also use `http://localhost:4100`.
+On the laptop, open **Voice check-ins** in the administrator dashboard: **Patient app inbox** polls the shared database every three seconds and needs no configuration. Medication confirmations and care-team messages use the same flow.
 
-The bridge defaults to loopback unless `--lan` is passed. Keep it on a trusted network; it is an unauthenticated local service with permissive CORS. Do not deploy it publicly or enter real patient data. Its storage file is gitignored. The inbox is independent of the original static risk queue: submissions do not automatically change clinical risk scores or create clinician replies. Task toggles remain local. There is no EHR connection or production patient backend.
+The events API is unauthenticated and accepts only the seeded patient identities, so treat it as demo software: do not enter real patient data. The inbox is independent of the original static risk queue: submissions do not automatically change clinical risk scores or create clinician replies. Task toggles remain local. There is no EHR connection or production patient backend.
+
+`npm run demo:server -- --lan` still runs the older file-backed bridge for offline demos, but the app no longer submits to it.
 
 The wearable insights area within Watch does not use WHOOP authentication, APIs, SDKs, official brand
 assets, or live device data. Its four scenarios contain fixed reference values

@@ -22,7 +22,7 @@ For the browser, run `npm run web`. Browser preview supports the patient flows a
 - Medication: the dashboard's medication list, one daily confirmation per medicine, and configurable daily care-plan notifications.
 - My plan: the dashboard's care tasks and follow-up appointment, local task completion, check-in journal, and shareable summary.
 - Care team: the dashboard's named clinicians and patient messages.
-- Wearable: interactive recovery, sleep, strain, HRV, resting heart rate,
+- Watch: round watch simulator with mood check-ins, reminders and help requests, followed by interactive recovery, sleep, strain, HRV, resting heart rate,
   seven-day trends, and four recovery scenarios. A snapshot can be sent to the
   local clinic bridge for staff review.
 - Separate device-local records for all ten dashboard profiles; Settings changes the active profile.
@@ -48,7 +48,7 @@ On the laptop, open **Voice check-ins** in the administrator dashboard and conne
 
 The bridge defaults to loopback unless `--lan` is passed. Keep it on a trusted network; it is an unauthenticated local service with permissive CORS. Do not deploy it publicly or enter real patient data. Its storage file is gitignored. The inbox is independent of the original static risk queue: submissions do not automatically change clinical risk scores or create clinician replies. Task toggles remain local. There is no EHR connection or production patient backend.
 
-The Wearable area does not use WHOOP authentication, APIs, SDKs, official brand
+The wearable insights area within Watch does not use WHOOP authentication, APIs, SDKs, official brand
 assets, or live device data. Its four scenarios contain fixed reference values
 that show how wearable context could complement—not replace—patient-reported
 symptoms and clinical review.
@@ -98,8 +98,17 @@ Verified during implementation: mobile TypeScript, five model tests, bridge pers
 2. Select a face, choose pain, add a short note and complete the check-in.
 3. Show the new entry in the administrator Patient app inbox.
 4. Record a medication, then trigger a five-second notification on the phone.
-5. Open Wearable, switch from “On track” to “Low recovery,” and share the
+5. Open Watch, switch from “On track” to “Low recovery,” and share the
    wearable snapshot with the clinic inbox.
 6. Open My plan and Care team: “A daily connection between the patient and their care team.”
 
 The application does not diagnose, triage automatically, monitor emergencies, or replace a prescribed care plan.
+
+
+## Watch simulator (patient-only update)
+
+The single **Watch** navigation item contains the interactive watch first, with wearable insights below. Watch activity history is hidden. Both sets of features use the existing patient profile.
+
+This update changes only `mobile/`. Simulated help requests are sent as **HELP REQUEST** messages through the existing clinic API. Mood entries use check-in events; reminder reviews and okay responses use messages. Local watch metadata is retained for offline retry. The administrator/server code is unchanged, so no new red alarm, staff acknowledgement or background administrator push is provided.
+
+No real sensors are connected. The sample readings and scenario controls demonstrate the interaction only. Timed watch reminders require the Watch screen to remain open. Plan review does not record a medication dose.

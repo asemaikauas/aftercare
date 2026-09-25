@@ -25,6 +25,7 @@ import {
   type PatientState,
   type Submission,
 } from "./src/model";
+import WatchSimulator from "./src/WatchSimulator";
 import { useStore } from "./src/useStore";
 import {
   wearableScenario,
@@ -51,7 +52,7 @@ import {
   type IconName,
 } from "./src/ui";
 
-type Tab = "Today" | "Medication" | "My plan" | "Wearable" | "Care team";
+type Tab = "Today" | "Medication" | "My plan" | "Watch" | "Care team";
 type Sheet = "checkin" | "settings" | "history" | null;
 const moods = ["Very low", "Low", "Okay", "Good", "Great"];
 const symptomsList = [
@@ -66,7 +67,7 @@ const tabs: { name: Tab; icon: IconName }[] = [
   { name: "Today", icon: "home" },
   { name: "Medication", icon: "pill" },
   { name: "My plan", icon: "plan" },
-  { name: "Wearable", icon: "activity" },
+  { name: "Watch", icon: "clock" },
   { name: "Care team", icon: "heart" },
 ];
 const formatTime = (date: string) =>
@@ -85,7 +86,7 @@ export default function App() {
   );
 }
 function PatientApp() {
-  const { store, ready, error, load, update, sync } = useStore();
+  const { store, ready, error, load, update, sync, isPending } = useStore();
   const [tab, setTab] = useState<Tab>("Today");
   const [sheet, setSheet] = useState<Sheet>(null);
   const [mood, setMood] = useState<number | null>(null);
@@ -381,7 +382,7 @@ function PatientApp() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Open wearable insights"
-                onPress={() => setTab("Wearable")}
+                onPress={() => setTab("Watch")}
               >
                 <Card style={{ backgroundColor: "#121715", borderColor: "#121715" }}>
                   <View style={s.between}>
@@ -733,7 +734,13 @@ function PatientApp() {
               )}
             </>
           )}
-          {tab === "Wearable" && (
+          {tab === "Watch" && <WatchSimulator key={patient.id} patient={patient} events={state.watchEvents ?? []} pendingIds={store.outbox.filter(e => e.patientId === patient.id && e.kind.startsWith('watch-')).map(e => e.id)} bridgeUrl={store.bridgeUrl} onSettings={openSettings} onMedication={() => setTab('Medication')} onRetry={async () => { await sync(store.bridgeUrl); }} onSubmit={async (item) => {
+            await savePatient(p => ({ ...p, watchEvents: [item, ...(p.watchEvents ?? []).filter(e => e.id !== item.id)] }), item);
+            if (!store.bridgeUrl) return false;
+            try { await sync(store.bridgeUrl); } catch { /* Keep unsent updates on device. */ }
+            return !isPending(item.id);
+          }} />}
+          {tab === "Watch" && (
             <>
               <View style={{ gap: 7 }}>
                 <Text style={s.eyebrow}>CONNECTED RECOVERY</Text>

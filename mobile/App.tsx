@@ -14,6 +14,12 @@ import {
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import {
+  RecordingPresets,
+  requestRecordingPermissionsAsync,
+  setAudioModeAsync,
+  useAudioRecorder,
+} from "expo-audio";
 import { seedPatients as patientProfiles } from "../db/seed-data";
 import {
   bridgeAddress,
@@ -102,6 +108,12 @@ function PatientApp() {
   const [wearableScenarioId, setWearableScenarioId] =
     useState<WearableScenarioId>("on-track");
   const [now, setNow] = useState(new Date());
+  const [voiceState, setVoiceState] = useState<
+    "idle" | "recording" | "transcribing" | "review" | "sending"
+  >("idle");
+  const [voiceTranscript, setVoiceTranscript] = useState("");
+  const [voiceError, setVoiceError] = useState("");
+  const voiceRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const patient =
     patientProfiles.find((p) => p.id === store.patientId) ?? patientProfiles[0];
   const state = store.patients[patient.id] ?? emptyPatient();
@@ -197,6 +209,69 @@ function PatientApp() {
         `${savedMessage} Saved on this device; clinic connection unavailable. Tap Sync in Settings to retry.`,
       );
     }
+  }
+  function transcribeOrigin(): string {
+    const url = new URL(store.bridgeUrl);
+    url.port = "3000";
+    return url.origin;
+  }
+  async function startVoiceCheckin() {
+    setVoiceError("");
+    if (!store.bridgeUrl) {
+      setVoiceError(
+        "Connect your clinic in Settings first — voice check-ins need that connection to transcribe.",
+      );
+      return;
+    }
+    try {
+      const permission = await requestRecordingPermissionsAsync();
+      if (!permission.granted) {
+        setVoiceError("Microphone access is needed to record a voice check-in.");
+        return;
+      }
+      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
+      await voiceRecorder.prepareToRecordAsync();
+      voiceRecorder.record();
+      setVoiceState("recording");
+    } catch (err) {
+      setVoiceError(errorMessage(err));
+    }
+  }
+  async function stopVoiceCheckin() {
+    setVoiceState("transcribing");
+    try {
+      await voiceRecorder.stop();
+      const uri = voiceRecorder.uri;
+      if (!uri) throw new Error("No recording captured. Please try again.");
+      const fileResponse = await fetch(uri);
+      const blob = await fileResponse.blob();
+      const form = new FormData();
+      form.append("audio", blob, "checkin.m4a");
+      const response = await fetch(`${transcribeOrigin()}/api/transcribe`, {
+        method: "POST",
+        body: form,
+        signal: AbortSignal.timeout(30000),
+      });
+      const data = (await response.json()) as {
+        transcript?: string;
+        error?: string;
+      };
+      if (!response.ok || !data.transcript)
+        throw new Error(data.error ?? "Transcription failed");
+      setVoiceTranscript(data.transcript);
+      setVoiceState("review");
+    } catch (err) {
+      setVoiceError(errorMessage(err));
+      setVoiceState("idle");
+    }
+  }
+  async function sendVoiceCheckin() {
+    setVoiceState("sending");
+    const transcript = voiceTranscript.trim();
+    await savePatient((p) => p, event("check-in", `Voice check-in: "${transcript}"`));
+    setVoiceTranscript("");
+    setVoiceState("idle");
+    await deliveryNotice("Your voice check-in is complete.");
   }
   function openCheckin(value?: number) {
     setMood(value ?? todayCheckin?.mood ?? null);
@@ -445,6 +520,67 @@ function PatientApp() {
                   icon="arrow"
                   onPress={() => openCheckin()}
                 />
+                {voiceState === "idle" && (
+                  <>
+                    <Button
+                      title="Or record a voice check-in"
+                      icon="mic"
+                      secondary
+                      style={{ marginTop: 10 }}
+                      onPress={() => void startVoiceCheckin()}
+                    />
+                    {voiceError !== "" && (
+                      <Text style={[s.small, { color: "#B4523F", marginTop: 8 }]}>
+                        {voiceError}
+                      </Text>
+                    )}
+                  </>
+                )}
+                {voiceState === "recording" && (
+                  <Button
+                    title="Stop recording"
+                    icon="mic"
+                    style={{ marginTop: 10 }}
+                    onPress={() => void stopVoiceCheckin()}
+                  />
+                )}
+                {voiceState === "transcribing" && (
+                  <View style={[s.row, { marginTop: 10, gap: 8 }]}>
+                    <ActivityIndicator color={C.forest} />
+                    <Text style={s.small}>Transcribing your check-in…</Text>
+                  </View>
+                )}
+                {(voiceState === "review" || voiceState === "sending") && (
+                  <View style={{ marginTop: 10 }}>
+                    <TextInput
+                      accessibilityLabel="Voice check-in transcript"
+                      multiline
+                      maxLength={3000}
+                      value={voiceTranscript}
+                      onChangeText={setVoiceTranscript}
+                      editable={voiceState === "review"}
+                      style={[s.input, { minHeight: 90, textAlignVertical: "top" }]}
+                    />
+                    <View style={[s.row, { marginTop: 8, gap: 8 }]}>
+                      <Button
+                        title="Discard"
+                        secondary
+                        disabled={voiceState === "sending"}
+                        style={s.grow}
+                        onPress={() => {
+                          setVoiceTranscript("");
+                          setVoiceState("idle");
+                        }}
+                      />
+                      <Button
+                        title={voiceState === "sending" ? "Sending…" : "Send check-in"}
+                        disabled={voiceState === "sending" || !voiceTranscript.trim()}
+                        style={s.grow}
+                        onPress={() => void sendVoiceCheckin()}
+                      />
+                    </View>
+                  </View>
+                )}
               </Card>
               <Section
                 title="Your next steps"

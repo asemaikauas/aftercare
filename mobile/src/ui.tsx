@@ -34,7 +34,8 @@ export type IconName =
   | "settings"
   | "leaf"
   | "clock"
-  | "activity";
+  | "activity"
+  | "mic";
 const paths: Record<IconName, string> = {
   home: "M3 10 12 3l9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z",
   pill: "m9 15 6-6M5 19a5.65 5.65 0 0 1 0-8l6-6a5.65 5.65 0 0 1 8 8l-6 6a5.65 5.65 0 0 1-8 0Z",
@@ -51,6 +52,7 @@ const paths: Record<IconName, string> = {
   leaf: "M20 3C7 2 2 8 5 16c8 4 16-1 15-13ZM3 22 15 10",
   clock: "M12 8v5l3 2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0",
   activity: "M3 12h4l2-7 4 14 2-7h6",
+  mic: "M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3ZM19 11a7 7 0 0 1-14 0M12 19v3",
 };
 export function Icon({
   name,

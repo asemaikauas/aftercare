@@ -10,8 +10,21 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.aftercare.patient.demo"
     },
-    "android": { "package": "com.aftercare.patient.demo" },
-    "plugins": [["expo-notifications", { "color": "#163f36" }]],
-    "web": { "name": "aftercare", "bundler": "metro" }
+    "android": {
+      "package": "com.aftercare.patient.demo"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "color": "#163f36"
+        }
+      ],
+      "expo-audio"
+    ],
+    "web": {
+      "name": "aftercare",
+      "bundler": "metro"
+    }
   }
 }

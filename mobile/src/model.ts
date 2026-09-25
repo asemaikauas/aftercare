@@ -79,7 +79,7 @@ export function bridgeAddress(input: string) {
     url.hash ||
     (url.pathname !== "/" && url.pathname !== "")
   )
-    throw new Error("Use a server address such as http://192.168.1.10:4100.");
+    throw new Error("Use a server address such as http://192.168.1.10:3000.");
   return url.origin;
 }
 export function validateCheckin(mood: number | null, pain: number | null) {

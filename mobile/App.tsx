@@ -211,11 +211,6 @@ function PatientApp() {
       );
     }
   }
-  function transcribeOrigin(): string {
-    const url = new URL(store.bridgeUrl);
-    url.port = "3000";
-    return url.origin;
-  }
   async function startVoiceCheckin() {
     setVoiceError("");
     if (!store.bridgeUrl) {
@@ -248,7 +243,7 @@ function PatientApp() {
       const blob = await fileResponse.blob();
       const form = new FormData();
       form.append("audio", blob, "checkin.m4a");
-      const response = await fetch(`${transcribeOrigin()}/api/transcribe`, {
+      const response = await fetch(`${store.bridgeUrl}/api/transcribe`, {
         method: "POST",
         body: form,
         signal: AbortSignal.timeout(30000),
@@ -1470,7 +1465,7 @@ function PatientApp() {
                         accessibilityLabel="Clinic server URL"
                         autoCapitalize="none"
                         autoCorrect={false}
-                        placeholder="http://192.168.1.10:4100"
+                        placeholder="http://192.168.1.10:3000"
                         placeholderTextColor={C.muted}
                         value={bridge}
                         onChangeText={setBridge}
@@ -1482,14 +1477,11 @@ function PatientApp() {
                         onPress={() =>
                           void run(async () => {
                             const url = bridgeAddress(bridge);
-                            const response = await fetch(`${url}/health`, {
+                            const response = await fetch(`${url}/api/health`, {
                               signal: AbortSignal.timeout(6000),
                             });
                             const data = await response.json();
-                            if (
-                              !response.ok ||
-                              data.service !== "continuum-demo"
-                            )
+                            if (!response.ok || data.service !== "careminute")
                               throw new Error(
                                 "This server is not compatible with CareMinute.",
                               );

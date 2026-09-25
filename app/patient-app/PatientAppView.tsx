@@ -106,11 +106,13 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
       };
       recorder.onstop = async () => {
         stream.getTracks().forEach((track) => track.stop());
-        const blob = new Blob(audioChunksRef.current, { type: recorder.mimeType || "audio/webm" });
+        const mimeType = recorder.mimeType || "audio/webm";
+        const blob = new Blob(audioChunksRef.current, { type: mimeType });
         setVoiceState("transcribing");
         try {
+          const extension = mimeType.includes("mp4") ? "mp4" : mimeType.includes("ogg") ? "ogg" : "webm";
           const form = new FormData();
-          form.append("audio", blob, "checkin.webm");
+          form.append("audio", blob, `checkin.${extension}`);
           const response = await fetch("/api/transcribe", { method: "POST", body: form });
           const data = (await response.json()) as { transcript?: string; error?: string };
           if (!response.ok || !data.transcript) throw new Error(data.error ?? "Transcription failed");

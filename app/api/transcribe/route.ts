@@ -16,8 +16,9 @@ export async function POST(request: Request) {
       return Response.json({ error: "No audio provided" }, { status: 400 });
     }
 
+    const filename = audio instanceof File && audio.name ? audio.name : "checkin.webm";
     const upstream = new FormData();
-    upstream.append("file", audio, "checkin.webm");
+    upstream.append("file", audio, filename);
     upstream.append("model", "gpt-4o-mini-transcribe");
 
     const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {

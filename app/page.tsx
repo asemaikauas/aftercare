@@ -121,8 +121,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 text-center">
           <p className="text-[13px] font-semibold text-[var(--ink)]">Decision support only</p>
           <p className="max-w-xl text-[13px] text-[var(--muted)]">
-            AI-generated summaries and priority scores require clinical review and are not for emergency use. This demo
-            runs on synthetic patient data.
+            AI-generated summaries and priority scores require clinical review and are not for emergency use.
           </p>
           <a href="/login" className="mt-2 rounded-full bg-[var(--forest)] px-7 py-3 text-[14px] font-semibold text-white hover:opacity-90">
             Administrator Login
@@ -131,7 +130,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="border-t border-[var(--line)] py-8 text-center text-[12px] text-[var(--muted)]">
-        Aftercare · Synthetic patient data · Not for emergency use
+        Aftercare · Patient recovery operations · Not for emergency use
       </footer>
     </div>
   );

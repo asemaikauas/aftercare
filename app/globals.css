@@ -1331,3 +1331,17 @@ h1 { margin: 0; font-size: 25px; line-height: 1.12; letter-spacing: -.65px; font
   .message-history, .message-composer { padding-left: 13px; padding-right: 13px; }
   .message-bubble { width: 91%; }
 }
+
+/* Patient phone submissions from the local clinic bridge. */
+.patient-app-inbox { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 22px; margin-bottom: 24px; }
+.patient-inbox-heading { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+.patient-inbox-heading h2 { margin: 0; font-size: 20px; }
+.patient-inbox-heading p:not(.eyebrow) { color: var(--muted); line-height: 1.5; }
+.patient-inbox-connect { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.patient-inbox-connect input { min-height: 40px; flex: 1; min-width: 180px; border: 1px solid var(--line); border-radius: 9px; padding: 8px 12px; }
+.patient-inbox-events { display: grid; gap: 10px; max-height: 480px; overflow-y: auto; }
+.patient-inbox-events article { border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: #f8faf6; }
+.patient-inbox-events article > div { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.patient-inbox-events article span { background: var(--green-soft); border-radius: 20px; padding: 4px 9px; font-size: 11px; }
+.patient-inbox-events time, .patient-inbox-events small, .patient-inbox-empty { color: var(--muted); font-size: 12px; }
+.patient-inbox-events p { line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -1,39 +1,71 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { spawn } from "node:child_process";
+import { once } from "node:events";
+import { fileURLToPath } from "node:url";
+import test, { after, before } from "node:test";
 
-async function render(pathname = "/") {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
+const projectRoot = fileURLToPath(new URL("..", import.meta.url));
+const port = 41000 + (process.pid % 1000);
+const origin = `http://localhost:${port}`;
+let server;
+let serverOutput = "";
 
-  return worker.fetch(
-    new Request(`http://localhost${pathname}`, {
-      headers: { accept: "text/html", host: "localhost" },
-    }),
+before(async () => {
+  server = spawn(
+    process.execPath,
+    ["node_modules/vinext/dist/cli.js", "dev", "--host", "127.0.0.1", "--port", String(port)],
     {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
+      cwd: projectRoot,
+      env: { ...process.env, WRANGLER_LOG_PATH: ".wrangler/wrangler.log" },
+      stdio: ["ignore", "pipe", "pipe"],
     },
   );
+
+  server.stdout.on("data", (chunk) => { serverOutput += chunk; });
+  server.stderr.on("data", (chunk) => { serverOutput += chunk; });
+
+  const deadline = Date.now() + 30_000;
+  while (Date.now() < deadline) {
+    if (server.exitCode !== null) {
+      throw new Error(`Development server exited before becoming ready.\n${serverOutput}`);
+    }
+
+    try {
+      const response = await fetch(origin);
+      if (response.ok) return;
+    } catch {
+      // The server is still starting.
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+
+  throw new Error(`Timed out waiting for the development server.\n${serverOutput}`);
+}, { timeout: 35_000 });
+
+after(async () => {
+  if (!server || server.exitCode !== null) return;
+  server.kill("SIGTERM");
+  await Promise.race([
+    once(server, "exit"),
+    new Promise((resolve) => setTimeout(resolve, 5_000)),
+  ]);
+});
+
+async function render(pathname = "/") {
+  return fetch(`${origin}${pathname}`, { headers: { accept: "text/html" } });
 }
 
-test("server-renders the aftercare clinic dashboard", async () => {
+test("server-renders the Aftercare landing page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>aftercare — Post-discharge care command center<\/title>/i);
-  assert.match(html, /Good morning, Maya/);
-  assert.match(html, /Patient priority/);
-  assert.match(html, /Sophia Reed/);
-  assert.match(html, /AI care brief/);
-  assert.match(html, /Synthetic patient data/);
+  assert.match(html, /<title>Aftercare — Post-discharge care command center<\/title>/i);
+  assert.match(html, /Patient Priority/);
+  assert.match(html, /AI Care Brief/);
+  assert.match(html, /Patient recovery operations/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -41,10 +73,10 @@ test("renders safety and human-review boundaries", async () => {
   const response = await render();
   const html = await response.text();
 
-  assert.match(html, /Review required/);
-  assert.match(html, /Clinical review required/);
-  assert.match(html, /Decision support only — not for emergency use/);
-  assert.match(html, /Source data behind the current score/);
+  assert.match(html, /Decision support only/);
+  assert.match(html, /require clinical review/);
+  assert.match(html, /not for emergency use/i);
+  assert.match(html, /source signal behind it/);
 });
 
 test("renders a dedicated patient profile route", async () => {
@@ -53,8 +85,8 @@ test("renders a dedicated patient profile route", async () => {
 
   const html = await response.text();
   assert.match(html, /Patient profile/);
-  assert.match(html, /Sophia Reed/);
+  assert.match(html, /Christel Carter/);
   assert.match(html, /Personal details/);
   assert.match(html, /Clinical record/);
-  assert.match(html, /Synthetic patient/);
+  assert.match(html, /Patient record/);
 });

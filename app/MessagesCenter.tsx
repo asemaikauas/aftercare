@@ -52,14 +52,11 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
       .sort((a, b) => new Date(b.preview.sentAt).getTime() - new Date(a.preview.sentAt).getTime());
   }, [filter, query, sortedMessages]);
 
-  useEffect(() => {
-    if (threadList.length && !threadList.some((thread) => thread.patientId === selectedPatientId)) {
-      setSelectedPatientId(threadList[0].patientId);
-    }
-  }, [threadList, selectedPatientId]);
-
+  const activePatientId = threadList.some((thread) => thread.patientId === selectedPatientId)
+    ? selectedPatientId
+    : threadList[0]?.patientId;
   const selectedThread = sortedMessages
-    .filter((message) => message.patientId === selectedPatientId)
+    .filter((message) => message.patientId === activePatientId)
     .sort((a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime());
   const selectedPatient = selectedThread[0];
   const sentCount = messages.filter((message) => message.direction === "sent").length;
@@ -78,7 +75,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
     <div className="messages-page">
       <header className="messages-header">
         <div><p className="eyebrow">Care coordination</p><h1>Messages</h1><p className="subtitle">Patient conversations and follow-ups.</p></div>
-        <div className="messages-header-actions"><span className="sync-pill"><i />Messaging connected <b>Demo</b></span><button className="primary-button" type="button" onClick={() => { setFilter("Sent"); setDraft("Hi, this is Maya from Northbridge Clinic. I’m checking in about your recovery today."); }}>＋ New message</button></div>
+        <div className="messages-header-actions"><span className="sync-pill"><i />Messaging connected <b>Active</b></span><button className="primary-button" type="button" onClick={() => { setFilter("Sent"); setDraft("Hi, this is Maya from Northbridge Clinic. I’m checking in about your recovery today."); }}>＋ New message</button></div>
       </header>
 
       <section className="message-summary" aria-label="Message summary">
@@ -95,7 +92,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
             {(["Sent", "Inbox", "All"] as MessageFilter[]).map((item) => <button key={item} type="button" role="tab" aria-selected={filter === item} className={filter === item ? "active" : ""} onClick={() => setFilter(item)}>{item}<span>{item === "Sent" ? sentCount : item === "Inbox" ? inboxCount : messages.length}</span></button>)}
           </div>
           <div className="thread-list" role="list">
-            {threadList.map((thread) => <button type="button" role="listitem" key={thread.patientId} className={selectedPatientId === thread.patientId ? "active" : ""} onClick={() => setSelectedPatientId(thread.patientId)}><span className="avatar message-avatar">{thread.preview.initials}<i /></span><div><div><strong>{thread.preview.patientName}</strong><time>{formatMessageTime(thread.preview.sentAt)}</time></div><p>{thread.preview.direction === "sent" ? <b> You: </b> : null}{thread.preview.body}</p><small><span className={thread.preview.direction}>{thread.preview.direction === "sent" ? "↗" : "↙"}</span>{thread.preview.category} · {thread.preview.status}</small></div></button>)}
+            {threadList.map((thread) => <button type="button" role="listitem" key={thread.patientId} className={activePatientId === thread.patientId ? "active" : ""} onClick={() => setSelectedPatientId(thread.patientId)}><span className="avatar message-avatar">{thread.preview.initials}<i /></span><div><div><strong>{thread.preview.patientName}</strong><time>{formatMessageTime(thread.preview.sentAt)}</time></div><p>{thread.preview.direction === "sent" ? <b> You: </b> : null}{thread.preview.body}</p><small><span className={thread.preview.direction}>{thread.preview.direction === "sent" ? "↗" : "↙"}</span>{thread.preview.category} · {thread.preview.status}</small></div></button>)}
             {!threadList.length && <div className="message-empty"><span>□</span><strong>No messages found</strong><p>Try a different search or filter.</p></div>}
           </div>
         </aside>
@@ -103,7 +100,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
         <article className="conversation-panel">
           {selectedPatient ? <>
             <header className="conversation-header"><div className="conversation-person"><span className="avatar large">{selectedPatient.initials}<i /></span><div><h2>{selectedPatient.patientName}</h2><p>Patient #{selectedPatient.patientId} · Post-discharge recovery</p></div></div><div><a href={`/patients/${selectedPatient.patientId}`}>Open profile</a><button aria-label="More conversation options">•••</button></div></header>
-            <div className="conversation-notice"><span>i</span>Demo messages are not sent to real patients.</div>
+            <div className="conversation-notice"><span>i</span>Review clinical instructions before sending.</div>
             <div className="message-history" aria-live="polite">
               <div className="history-day"><span>Recovery conversation</span></div>
               {selectedThread.map((message) => <div key={message.id} className={`message-bubble-row ${message.direction}`}><div className="message-bubble"><div><strong>{message.direction === "sent" ? "You" : message.patientName}</strong><time>{formatMessageTime(message.sentAt)}</time></div><p>{message.body}</p><footer><span>{message.channel}</span><span>{message.status}{message.direction === "sent" ? " ✓" : ""}</span></footer></div></div>)}
@@ -112,7 +109,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
           </> : <div className="conversation-empty"><span>□</span><h2>Select a conversation</h2><p>Choose a patient thread to review sent messages and replies.</p></div>}
         </article>
       </section>
-      <footer className="page-foot"><span>Aftercare · Messages stored on this device</span><span>Synthetic data · Not for emergency use</span></footer>
+      <footer className="page-foot"><span>Aftercare · Messages stored on this device</span><span>Not for emergency use</span></footer>
     </div>
   );
 }

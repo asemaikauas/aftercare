@@ -1,6 +1,6 @@
-# aftercare — patient app
+# Aftercare — patient app
 
-A native React Native / Expo SDK 57 app for iOS and Android, with a browser preview. Built for the FishTank aftercare demo. The original administrator application remains at the repository root.
+A native React Native / Expo SDK 57 app for iOS and Android, with a browser preview. The administrator application remains at the repository root.
 
 ## Start on a phone
 
@@ -22,16 +22,19 @@ For the browser, run `npm run web`. Browser preview supports the patient flows a
 - Medication: the dashboard's medication list, one daily confirmation per medicine, and configurable daily care-plan notifications.
 - My plan: the dashboard's care tasks and follow-up appointment, local task completion, check-in journal, and shareable summary.
 - Care team: the dashboard's named clinicians and patient messages.
-- Separate device-local records for all ten synthetic dashboard profiles; Settings changes the demo profile.
-- Offline outbox: check-ins, medication logs and messages remain local until the demo bridge acknowledges them. Failed delivery retains the item; explicit Sync retries it.
+- Wearable: interactive recovery, sleep, strain, HRV, resting heart rate,
+  seven-day trends, and four recovery scenarios. A snapshot can be sent to the
+  local clinic bridge for staff review.
+- Separate device-local records for all ten dashboard profiles; Settings changes the active profile.
+- Offline outbox: check-ins, medication logs and messages remain local until the clinic bridge acknowledges them. Failed delivery retains the item; explicit Sync retries it.
 - A local clinic bridge writes submissions to disk and exposes them in **administrator → Voice check-ins → Patient app inbox**.
 
-## Live phone → administrator demo
+## Live phone → administrator
 
 Start two additional terminals in the repository root:
 
 ```powershell
-# Terminal 1 — synthetic data bridge, trusted local network only
+# Terminal 1 — local data bridge, trusted network only
 npm run demo:server -- --lan
 
 # Terminal 2 — original administrator app
@@ -39,19 +42,24 @@ npm install
 npm run dev
 ```
 
-Find the laptop's Wi-Fi IPv4 address using `ipconfig`. In the **phone app → bell → Connect the demo clinic**, enter `http://YOUR-LAPTOP-IP:4100` and choose **Connect and sync**. `localhost` on a phone means the phone, not the laptop.
+Find the laptop's Wi-Fi IPv4 address using `ipconfig`. In the **phone app → bell → Connect your clinic**, enter `http://YOUR-LAPTOP-IP:4100` and choose **Connect and sync**. `localhost` on a phone means the phone, not the laptop.
 
 On the laptop, open **Voice check-ins** in the administrator dashboard and connect its **Patient app inbox** to `http://localhost:4100`. Complete a check-in on the phone: the administrator inbox refreshes every three seconds. Medication confirmations and care-team messages use the same flow. A browser preview on the laptop can also use `http://localhost:4100`.
 
-The bridge defaults to loopback unless `--lan` is passed. Keep it on a trusted network; it is an unauthenticated, synthetic-only demo service with permissive CORS. Do not deploy it publicly or enter real patient data. Its file is `work/demo-clinic/events.json` (gitignored). The inbox is independent of the original static risk queue: submissions do not automatically change clinical risk scores or create clinician replies. Task toggles remain local. There is no real sign-in, EHR connection, or production patient backend.
+The bridge defaults to loopback unless `--lan` is passed. Keep it on a trusted network; it is an unauthenticated local service with permissive CORS. Do not deploy it publicly or enter real patient data. Its storage file is gitignored. The inbox is independent of the original static risk queue: submissions do not automatically change clinical risk scores or create clinician replies. Task toggles remain local. There is no EHR connection or production patient backend.
 
-If the existing admin app cannot start, the patient app remains usable offline. The new bridge has no third-party runtime dependencies and can still receive data. Hosted HTTPS dashboards cannot fetch an HTTP localhost bridge; use the dashboard locally for this demo.
+The Wearable area does not use WHOOP authentication, APIs, SDKs, official brand
+assets, or live device data. Its four scenarios contain fixed reference values
+that show how wearable context could complement—not replace—patient-reported
+symptoms and clinical review.
+
+If the existing admin app cannot start, the patient app remains usable offline. The bridge has no third-party runtime dependencies and can still receive data. Hosted HTTPS dashboards cannot fetch an HTTP localhost bridge; use the dashboard locally for this workflow.
 
 ## Notifications
 
-In the phone app, open the bell, choose a 24-hour reminder time, then **Enable reminders**. Notifications request permission only after that action. **Try a reminder in 5 seconds** is the fast stage demonstration. Tap a notification to open Medication. Daily notifications are local OS-scheduled reminders and do not require a running clinic bridge. Lock-screen content deliberately omits patient and medication names.
+In the phone app, open the bell, choose a 24-hour reminder time, then **Enable reminders**. Notifications request permission only after that action. Use **Try a reminder in 5 seconds** to verify delivery. Tap a notification to open Medication. Daily notifications are local OS-scheduled reminders and do not require a running clinic bridge. Lock-screen content deliberately omits patient and medication names.
 
-The source data does not contain complete prescribed doses or schedules. The app therefore schedules one personal daily prompt to review the care plan, not inferred medication doses. Medication buttons are daily demo records, not a multi-dose medication administration record. Existing timestamps in source descriptions are historical synthetic clinic data. Phone settings, battery restrictions and notification permission can affect delivery. Daily time follows device-local time; re-save the time after a timezone change.
+The source data does not contain complete prescribed doses or schedules. The app therefore schedules one personal daily prompt to review the care plan, not inferred medication doses. Medication buttons are daily records, not a multi-dose medication administration record. Existing timestamps in source descriptions are historical clinic data. Phone settings, battery restrictions and notification permission can affect delivery. Daily time follows device-local time; re-save the time after a timezone change.
 
 Remote push is wired for registration and notification navigation, but requires an Expo project and platform credentials:
 
@@ -89,7 +97,9 @@ Verified during implementation: mobile TypeScript, five model tests, bridge pers
 1. Open Sophia's Today screen: “Recovery doesn't end at discharge.”
 2. Select a face, choose pain, add a short note and complete the check-in.
 3. Show the new entry in the administrator Patient app inbox.
-4. Record a medication, then demonstrate a five-second notification on the phone.
-5. Open My plan and Care team: “A daily connection between the patient and their care team.”
+4. Record a medication, then trigger a five-second notification on the phone.
+5. Open Wearable, switch from “On track” to “Low recovery,” and share the
+   wearable snapshot with the clinic inbox.
+6. Open My plan and Care team: “A daily connection between the patient and their care team.”
 
-Describe this as a working synthetic-data prototype. It does not diagnose, triage automatically, monitor emergencies, or replace a prescribed care plan.
+The application does not diagnose, triage automatically, monitor emergencies, or replace a prescribed care plan.

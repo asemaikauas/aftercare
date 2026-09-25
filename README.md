@@ -1,14 +1,21 @@
-# Aftercare Clinic Demo
+# Aftercare
 
-## Patient mobile app — FishTank
+Aftercare is a clinic-side command center for post-discharge care. It helps care
+managers understand which patients need attention, why they were prioritized,
+and what approved follow-up action can happen next.
 
-The iOS/Android patient app is in `mobile/`. It reuses this dashboard's synthetic patient profiles and includes mood check-ins, medication logs, phone reminders, care tasks, and care-team messages. See [mobile setup and demo guide](mobile/README.md).
+## Patient mobile app
 
-Run `npm run demo:server -- --lan` for the optional local phone-to-clinic bridge. Incoming submissions appear in the new **Patient app inbox** inside **Voice check-ins**. The bridge is for synthetic demo data on a trusted local network only.
+The iOS/Android patient app is in `mobile/`. It includes mood check-ins,
+medication logs, phone reminders, care tasks, care-team messages, and wearable
+insights. See the [mobile setup guide](mobile/README.md).
 
-Aftercare is a clinic-side command center for post-discharge care. It helps one care manager understand which patients need attention, why they were prioritized, and what approved follow-up action can happen next.
+Run `npm run demo:server -- --lan` for the optional local phone-to-clinic bridge.
+Incoming submissions appear in **Patient app inbox** inside **Voice check-ins**.
+Use the local bridge only on a trusted network.
 
-This repository is a functional front-end demo using synthetic patient data. It is decision-support software, not a diagnostic system or an emergency service.
+Aftercare is decision-support software, not a diagnostic system or an emergency
+service.
 
 ## Product scope
 
@@ -22,18 +29,18 @@ The MVP is deliberately narrow:
 
 The AI may summarize, prioritize, and draft. It does not diagnose, alter a prescribed care plan, or send clinical instructions without staff review.
 
-## Demo features
+## Features
 
-- Ten realistic synthetic post-discharge patient records
+- Ten post-discharge patient records
 - Risk filters and patient search
 - Patient-specific AI care briefs with evidence trails
-- Mock Apple Health, WHOOP, and clinic-record feeds
+- Apple Health, WHOOP, and clinic-record views
 - Symptoms, conditions, procedures, laboratory results, and trend signals
 - Timeline, care-plan, and clinical-record views
 - Editable patient reminder approval flow
 - Follow-up appointment offer approval flow
 - Responsive desktop and mobile layouts
-- Explicit review, provenance, demo-data, and emergency-use boundaries
+- Explicit review, provenance, and emergency-use boundaries
 
 ## The product loop
 
@@ -41,7 +48,7 @@ The AI may summarize, prioritize, and draft. It does not diagnose, alter a presc
 
 This loop is the product. A generic chatbot is intentionally not the center of the experience.
 
-## What should remain mocked until production
+## Production requirements
 
 - Patient identity and consent
 - Wearable authorization and data ingestion
@@ -74,4 +81,3 @@ npm run dev
 ```
 
 Use `npm run build` for a production build and `npm test` for the server-rendered smoke tests.
-

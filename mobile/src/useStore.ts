@@ -47,7 +47,7 @@ export function useStore() {
       });
       if (!response.ok)
         throw new Error(
-          "The demo clinic could not accept this update. It is still saved on this device.",
+          "The clinic could not accept this update. It is still saved on this device.",
         );
       await update((value) => ({
         ...value,

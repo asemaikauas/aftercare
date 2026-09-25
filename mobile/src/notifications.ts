@@ -78,7 +78,7 @@ export async function testReminder() {
   await n.scheduleNotificationAsync({
     content: {
       title: "Your care, one step at a time",
-      body: "This is your aftercare demo reminder. Open your care plan when you’re ready.",
+      body: "Open your aftercare plan when you’re ready.",
       data: { screen: "Medication" },
     },
     trigger: {

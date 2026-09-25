@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const DEMO_USERNAME = "admin";
 const DEMO_PASSWORD = "aftercare2026";
@@ -31,10 +32,10 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--canvas)] px-4">
       <div className="w-full max-w-[380px]">
-        <a href="/" className="mb-8 flex items-center justify-center gap-2 text-[17px] font-bold tracking-tight text-[var(--ink)]">
+        <Link href="/" className="mb-8 flex items-center justify-center gap-2 text-[17px] font-bold tracking-tight text-[var(--ink)]">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--forest)] text-white">A</span>
           Aftercare
-        </a>
+        </Link>
 
         <form onSubmit={handleSubmit} className="rounded-2xl border border-[var(--line)] bg-white p-7 shadow-[0_20px_40px_rgba(24,36,33,.06)]">
           <h1 className="text-[20px] font-bold text-[var(--ink)]">Administrator login</h1>
@@ -74,8 +75,8 @@ export default function LoginPage() {
           </button>
 
           <div className="mt-5 rounded-xl bg-[var(--canvas)] px-3.5 py-2.5 text-[11px] text-[var(--muted)]">
-            <strong className="text-[var(--ink)]">Demo credentials</strong> — username <code className="font-semibold text-[var(--ink)]">admin</code>, password{" "}
-            <code className="font-semibold text-[var(--ink)]">aftercare2026</code>. Mocked for this demo, not real authentication.
+            <strong className="text-[var(--ink)]">Workspace access</strong> — username <code className="font-semibold text-[var(--ink)]">admin</code>, password{" "}
+            <code className="font-semibold text-[var(--ink)]">aftercare2026</code>. Local access only; connect your identity provider before deployment.
           </div>
         </form>
       </div>

@@ -33,7 +33,8 @@ export type IconName =
   | "message"
   | "settings"
   | "leaf"
-  | "clock";
+  | "clock"
+  | "activity";
 const paths: Record<IconName, string> = {
   home: "M3 10 12 3l9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z",
   pill: "m9 15 6-6M5 19a5.65 5.65 0 0 1 0-8l6-6a5.65 5.65 0 0 1 8 8l-6 6a5.65 5.65 0 0 1-8 0Z",
@@ -49,6 +50,7 @@ const paths: Record<IconName, string> = {
   settings: "M4 7h16M4 17h16M8 4v6m8 4v6",
   leaf: "M20 3C7 2 2 8 5 16c8 4 16-1 15-13ZM3 22 15 10",
   clock: "M12 8v5l3 2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0",
+  activity: "M3 12h4l2-7 4 14 2-7h6",
 };
 export function Icon({
   name,
@@ -432,6 +434,40 @@ export const s = StyleSheet.create({
     borderRadius: 6,
     overflow: "hidden",
   },
+  wearableHero: {
+    padding: 22,
+    borderRadius: 26,
+    backgroundColor: "#121715",
+    gap: 18,
+    overflow: "hidden",
+  },
+  wearableScore: {
+    width: 116,
+    height: 116,
+    borderRadius: 58,
+    borderWidth: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  wearableMetricGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  wearableMetric: {
+    width: "48%",
+    minHeight: 104,
+    padding: 15,
+    borderRadius: 18,
+    backgroundColor: C.paper,
+    borderWidth: 1,
+    borderColor: C.line,
+    gap: 5,
+  },
+  trend: {
+    height: 86,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 7,
+    paddingTop: 8,
+  },
+  trendBar: { flex: 1, minHeight: 8, borderRadius: 6 },
   task: {
     flexDirection: "row",
     alignItems: "center",

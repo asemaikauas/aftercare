@@ -188,7 +188,6 @@ export default function DuoSimulator() {
       controls.dispose();
       mount.removeChild(renderer.domElement);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -196,7 +195,7 @@ export default function DuoSimulator() {
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex flex-col items-center gap-1 px-4 pt-6 text-center">
         <a href="/dashboard" className="pointer-events-auto text-[13px] font-medium text-white/70 hover:text-white hover:underline">← Back to clinician dashboard</a>
         <h1 className="mt-2 text-[22px] font-bold text-white">Aftercare on iPhone Duo</h1>
-        <p className="max-w-md text-[13px] text-white/60">Live prototype rendered on a foldable 3D device · drag to rotate · use the slider to fold</p>
+        <p className="max-w-md text-[13px] text-white/60">Patient experience on a foldable 3D device · drag to rotate · use the slider to fold</p>
       </div>
 
       <div ref={mountRef} className="absolute inset-0" />
@@ -222,7 +221,7 @@ export default function DuoSimulator() {
               onClick={() => setAutoFold((current) => !current)}
               className={`rounded-full px-4 py-2 text-[12px] font-semibold ${autoFold ? "bg-[var(--green)] text-white" : "bg-white/10 text-white"}`}
             >
-              {autoFold ? "Stop auto-fold" : "Auto-fold demo"}
+              {autoFold ? "Stop auto-fold" : "Start auto-fold"}
             </button>
             <button
               type="button"

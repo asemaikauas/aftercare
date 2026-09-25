@@ -4,7 +4,7 @@ import type { PatientProfile } from "./types";
 // were extracted from a locally generated Synthea (syntheticmass) population
 // — see the "synthea" source tag on each row once seeded. Recovery-specific
 // fields (symptoms, vitals deltas, tasks, timeline, AI summary) are authored
-// for the demo, grounded in each patient's real underlying conditions, since
+// for this dataset, grounded in each patient's underlying conditions, since
 // Synthea does not simulate day-by-day post-discharge check-ins.
 
 const defaultCareTeam = [
@@ -30,7 +30,7 @@ function profile(seed: Seed): PatientProfile {
 
 export const seedPatients: PatientProfile[] = [
   profile({
-    id: "1", name: "Christel Carter", initials: "CC", risk: "Critical", score: 87, age: 51, dob: "12 Mar 1975", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-2201", email: "christel.carter@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20144",
+    id: "1", name: "Christel Carter", initials: "CC", risk: "Critical", score: 87, age: 51, dob: "12 Mar 1975", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-2201", email: "christel.carter@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20144",
     procedure: "Coronary artery bypass graft", procedureDate: "17 Sep 2026", dischargeDate: "18 Sep 2026", service: "Cardiac recovery",
     nextAppointment: "24 Sep · 2:00 PM · Cardiac nurse call",
     alert: "Weight gain and breathlessness on exertion",
@@ -67,7 +67,7 @@ export const seedPatients: PatientProfile[] = [
     ],
   }),
   profile({
-    id: "2", name: "Antonia Olivas", initials: "AO", risk: "Critical", score: 84, age: 75, dob: "02 Jun 1951", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-3312", email: "antonia.olivas@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20151",
+    id: "2", name: "Antonia Olivas", initials: "AO", risk: "Critical", score: 84, age: 75, dob: "02 Jun 1951", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-3312", email: "antonia.olivas@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20151",
     procedure: "Breast lesion excision", procedureDate: "18 Sep 2026", dischargeDate: "19 Sep 2026", service: "Breast surgery recovery",
     nextAppointment: "24 Sep · 11:15 AM · Surgical oncology review",
     alert: "Chest discomfort in a patient with prior heart attack",
@@ -103,7 +103,7 @@ export const seedPatients: PatientProfile[] = [
     ],
   }),
   profile({
-    id: "3", name: "Anglea Gulgowski", initials: "AG", risk: "Critical", score: 81, age: 59, dob: "30 Jan 1967", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-4420", email: "anglea.gulgowski@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20159",
+    id: "3", name: "Anglea Gulgowski", initials: "AG", risk: "Critical", score: 81, age: 59, dob: "30 Jan 1967", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-4420", email: "anglea.gulgowski@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20159",
     procedure: "Aortic valve replacement", procedureDate: "16 Sep 2026", dischargeDate: "20 Sep 2026", service: "Cardiac recovery",
     nextAppointment: "24 Sep · 9:30 AM · Cardiac nurse call",
     alert: "Reduced urine output with existing kidney disease",
@@ -140,7 +140,7 @@ export const seedPatients: PatientProfile[] = [
     ],
   }),
   profile({
-    id: "4", name: "Mason Weissnat", initials: "MW", risk: "Watch", score: 63, age: 63, dob: "08 Apr 1963", pronouns: "He / him", sex: "Male", language: "English", phone: "+1 (555) 018-1187", email: "mason.weissnat@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20112",
+    id: "4", name: "Mason Weissnat", initials: "MW", risk: "Watch", score: 63, age: 63, dob: "08 Apr 1963", pronouns: "He / him", sex: "Male", language: "English", phone: "+1 (555) 018-1187", email: "mason.weissnat@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20112",
     procedure: "Coronary artery bypass graft", procedureDate: "19 Sep 2026", dischargeDate: "22 Sep 2026", service: "Cardiac recovery",
     nextAppointment: "25 Sep · 10:00 AM · Cardiac rehab",
     alert: "Activity below target, blood pressure at watch boundary",
@@ -174,7 +174,7 @@ export const seedPatients: PatientProfile[] = [
     ],
   }),
   profile({
-    id: "5", name: "Francoise Graham", initials: "FG", risk: "Watch", score: 57, age: 71, dob: "14 May 1955", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-5518", email: "francoise.graham@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20167",
+    id: "5", name: "Francoise Graham", initials: "FG", risk: "Watch", score: 57, age: 71, dob: "14 May 1955", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-5518", email: "francoise.graham@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20167",
     procedure: "Laparoscopic partial colectomy", procedureDate: "20 Sep 2026", dischargeDate: "22 Sep 2026", service: "Abdominal surgery recovery",
     nextAppointment: "25 Sep · 9:45 AM · Clinic visit",
     alert: "Mobility goal missed and rising pain score",
@@ -205,7 +205,7 @@ export const seedPatients: PatientProfile[] = [
     ],
   }),
   profile({
-    id: "6", name: "Yolonda Erdman", initials: "YE", risk: "Watch", score: 54, age: 69, dob: "19 Nov 1956", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-6604", email: "yolonda.erdman@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20172",
+    id: "6", name: "Yolonda Erdman", initials: "YE", risk: "Watch", score: 54, age: 69, dob: "19 Nov 1956", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-6604", email: "yolonda.erdman@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20172",
     procedure: "Breast lesion excision with sentinel node biopsy", procedureDate: "21 Sep 2026", dischargeDate: "21 Sep 2026", service: "Breast surgery recovery",
     nextAppointment: "26 Sep · 1:30 PM · Surgical oncology review",
     alert: "Arm swelling reported near the node biopsy site",
@@ -233,7 +233,7 @@ export const seedPatients: PatientProfile[] = [
     ],
   }),
   profile({
-    id: "7", name: "Reginald Veum", initials: "RV", risk: "Watch", score: 51, age: 34, dob: "05 Feb 1992", pronouns: "He / him", sex: "Male", language: "English", phone: "+1 (555) 018-7719", email: "reginald.veum@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20180",
+    id: "7", name: "Reginald Veum", initials: "RV", risk: "Watch", score: 51, age: 34, dob: "05 Feb 1992", pronouns: "He / him", sex: "Male", language: "English", phone: "+1 (555) 018-7719", email: "reginald.veum@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20180",
     procedure: "Lung volume reduction surgery", procedureDate: "17 Sep 2026", dischargeDate: "21 Sep 2026", service: "Thoracic surgery recovery",
     nextAppointment: "25 Sep · 3:00 PM · Pulmonology review",
     alert: "Oxygen saturation dipping on exertion",
@@ -261,7 +261,7 @@ export const seedPatients: PatientProfile[] = [
     ],
   }),
   profile({
-    id: "8", name: "Zoila Buckridge", initials: "ZB", risk: "Stable", score: 33, age: 56, dob: "27 Aug 1970", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-8825", email: "zoila.buckridge@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20130",
+    id: "8", name: "Zoila Buckridge", initials: "ZB", risk: "Stable", score: 33, age: 56, dob: "27 Aug 1970", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-8825", email: "zoila.buckridge@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20130",
     procedure: "Coronary artery bypass graft", procedureDate: "13 Sep 2026", dischargeDate: "18 Sep 2026", service: "Cardiac recovery",
     nextAppointment: "26 Sep · Routine cardiac check",
     alert: "Recovery progressing as expected",
@@ -287,7 +287,7 @@ export const seedPatients: PatientProfile[] = [
     timeline: [{ time: "Today · 06:55", title: "Vitals synced", detail: "Glucose and activity within range.", source: "Apple Health", tone: "stable" }],
   }),
   profile({
-    id: "9", name: "Lenna Pollich", initials: "LP", risk: "Stable", score: 22, age: 56, dob: "03 Oct 1969", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-9931", email: "lenna.pollich@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20188",
+    id: "9", name: "Lenna Pollich", initials: "LP", risk: "Stable", score: 22, age: 56, dob: "03 Oct 1969", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-9931", email: "lenna.pollich@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20188",
     procedure: "Laparoscopic partial colectomy", procedureDate: "20 Sep 2026", dischargeDate: "21 Sep 2026", service: "Abdominal surgery recovery",
     nextAppointment: "24 Sep · Routine check",
     alert: "Meeting recovery goals",
@@ -311,7 +311,7 @@ export const seedPatients: PatientProfile[] = [
     timeline: [{ time: "Today · 07:05", title: "Check-in completed", detail: "No new symptoms reported.", source: "Patient app", tone: "stable" }],
   }),
   profile({
-    id: "10", name: "Jenni Johnston", initials: "JJ", risk: "Stable", score: 14, age: 27, dob: "21 Mar 1999", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-0142", email: "jenni.johnston@example.demo", address: "Synthetic demo address", emergencyContact: "Synthetic contact on file", mrn: "NB-20195",
+    id: "10", name: "Jenni Johnston", initials: "JJ", risk: "Stable", score: 14, age: 27, dob: "21 Mar 1999", pronouns: "She / her", sex: "Female", language: "English", phone: "+1 (555) 018-0142", email: "jenni.johnston@example.com", address: "Address on file", emergencyContact: "Emergency contact on file", mrn: "NB-20195",
     procedure: "Laparoscopic appendectomy", procedureDate: "22 Sep 2026", dischargeDate: "22 Sep 2026", service: "General surgery recovery",
     nextAppointment: "24 Sep · Routine check",
     alert: "Ready for routine follow-up",

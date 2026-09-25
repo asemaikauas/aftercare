@@ -34,13 +34,24 @@ test("phone event reaches admin inbox, survives restart, and retry is idempotent
     assert.equal((await post({ ...event, body: "" })).status, 400);
     assert.equal((await post(event)).status, 201);
     assert.equal((await post(event)).status, 201);
+    assert.equal(
+      (
+        await post({
+          ...event,
+          id: "wearable-1",
+          kind: "wearable",
+          body: "Simulated recovery 51%.",
+        })
+      ).status,
+      201,
+    );
     await Promise.all([
       post({ ...event, id: "test-2" }),
       post({ ...event, id: "test-3" }),
     ]);
     assert.equal(
       (await (await fetch(`${url}/events`)).json()).events.length,
-      3,
+      4,
     );
     await close();
     server = createDemoServer(join(directory, "events.json"));

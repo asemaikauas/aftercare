@@ -1,7 +1,7 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 // Nested record shapes (conditions, labs, tasks, etc.) are stored as JSON
-// text columns. This is a demo dataset seeded once from Synthea output, not
+// text columns. This dataset is seeded once from Synthea output, not
 // a normalized clinical schema — see db/README seed script for the shape.
 export const patients = sqliteTable("patients", {
   id: text("id").primaryKey(),

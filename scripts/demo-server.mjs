@@ -1,4 +1,4 @@
-// Synthetic-data hackathon bridge. No authentication: never expose publicly.
+// Local development bridge. No authentication: never expose publicly.
 import http from "node:http";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -17,7 +17,7 @@ export function validateEvent(value) {
     value.patientName === patient.name &&
     typeof value.id === "string" &&
     /^[\w-]{1,100}$/.test(value.id) &&
-    ["check-in", "medication", "message"].includes(value.kind) &&
+    ["check-in", "medication", "message", "wearable"].includes(value.kind) &&
     typeof value.body === "string" &&
     value.body.trim().length > 0 &&
     value.body.length <= 3000 &&
@@ -77,7 +77,7 @@ export function createDemoServer(storage = filename) {
         }
         if (!validateEvent(value))
           return send(400, {
-            error: "Expected an event for a known synthetic patient",
+            error: "Expected an event for a known patient",
           });
         const clean = {
           id: value.id,
@@ -94,7 +94,7 @@ export function createDemoServer(storage = filename) {
             if (events.some((event) => event.id === clean.id)) return;
             // Keep idempotency keys instead of pruning previously acknowledged events.
             if (events.length >= 10000)
-              throw new Error("Demo inbox capacity reached");
+              throw new Error("Inbox capacity reached");
             await mkdir(dirname(storage), { recursive: true });
             await writeFile(
               `${storage}.tmp`,
@@ -108,8 +108,8 @@ export function createDemoServer(storage = filename) {
       }
       send(404, { error: "Not found" });
     } catch (error) {
-      console.error("Demo bridge:", error.message);
-      send(500, { error: "Demo inbox unavailable; retry later" });
+      console.error("Local bridge:", error.message);
+      send(500, { error: "Inbox unavailable; retry later" });
     }
   });
 }
@@ -118,7 +118,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const port = Number(process.env.DEMO_PORT || 4100);
   createDemoServer().listen(port, host, () =>
     console.log(
-      `aftercare synthetic demo inbox: http://${host}:${port}\nUse --lan on a trusted local network to connect a phone. Do not expose this unauthenticated demo publicly.`,
+      `Aftercare local inbox: http://${host}:${port}\nUse --lan on a trusted local network to connect a phone. Do not expose this unauthenticated service publicly.`,
     ),
   );
 }

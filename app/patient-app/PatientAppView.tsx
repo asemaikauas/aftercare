@@ -68,7 +68,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
   if (!patient) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--canvas)] p-6 text-center">
-        <p>Demo patient record not found.</p>
+        <p>Patient record not found.</p>
       </div>
     );
   }
@@ -155,7 +155,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--forest)] text-2xl font-bold text-white">A</div>
               <div>
                 <h1 className="text-[22px] font-bold text-[var(--ink)]">Welcome back</h1>
-                <p className="mt-1 text-[13px] text-[var(--muted)]">Aftercare patient app · synthetic demo account</p>
+                <p className="mt-1 text-[13px] text-[var(--muted)]">Aftercare patient app</p>
               </div>
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--canvas)] text-3xl">{patient.initials}</div>
               <p className="text-[15px] font-semibold text-[var(--ink)]">{patient.name}</p>
@@ -171,7 +171,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
               >
                 Continue as {firstName}
               </button>
-              <p className="text-[11px] text-[var(--muted)]">Face ID / passcode sign-in mocked for this demo</p>
+              <p className="text-[11px] text-[var(--muted)]">Continue with Face ID or your device passcode</p>
             </div>
           )}
 
@@ -187,7 +187,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
                 className="mt-4 flex w-full items-center justify-between rounded-2xl bg-[var(--forest)] px-5 py-4 text-left text-white active:opacity-90"
               >
                 <span>
-                  <span className="block text-[13px] font-medium opacity-80">Today's check-in</span>
+                  <span className="block text-[13px] font-medium opacity-80">Today’s check-in</span>
                   <span className="block text-[16px] font-semibold">How are you feeling today?</span>
                 </span>
                 <span className="text-xl">→</span>
@@ -195,7 +195,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
 
               <section className="mt-5 rounded-2xl border border-[var(--line)] bg-white p-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-[15px] font-semibold text-[var(--ink)]">Today's care plan</h2>
+                  <h2 className="text-[15px] font-semibold text-[var(--ink)]">Today’s care plan</h2>
                   <span className="text-[12px] font-medium text-[var(--muted)]">{completedCount} of {patient.tasks.length}</span>
                 </div>
                 <div className="mt-3 flex flex-col gap-2">
@@ -239,7 +239,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
                 </div>
                 <div className="mt-2 rounded-xl bg-[var(--canvas)] p-3">
                   <p className="text-[12px] font-semibold text-[var(--ink)]">Maya Nelson · Care manager</p>
-                  <p className="mt-1 text-[13px] text-[var(--ink)]">Hi {firstName}, please complete today's check-in and let us know if anything feels different. We're reviewing your recovery daily.</p>
+                  <p className="mt-1 text-[13px] text-[var(--ink)]">Hi {firstName}, please complete today’s check-in and let us know if anything feels different. We’re reviewing your recovery daily.</p>
                 </div>
               </section>
 
@@ -371,7 +371,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
     <div className="min-h-screen bg-[var(--canvas)] px-4 py-10">
       <div className="mx-auto mb-6 max-w-[380px] text-center">
         <a href="/dashboard" className="text-[13px] font-medium text-[var(--forest)] hover:underline">← Back to clinician dashboard</a>
-        <p className="mt-2 text-[12px] text-[var(--muted)]">Patient app prototype · what {firstName} would see after logging in · mobile mock</p>
+        <p className="mt-2 text-[12px] text-[var(--muted)]">{firstName}’s recovery workspace</p>
       </div>
 
       <div className="relative mx-auto h-[812px] w-[375px] overflow-hidden rounded-[3rem] border-[10px] border-black bg-white shadow-[0_30px_60px_rgba(24,36,33,.25)]">

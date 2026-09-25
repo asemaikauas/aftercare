@@ -5,6 +5,7 @@ import type { PatientProfile } from "../../db/types";
 import { dayOfRecovery } from "../dashboard-adapter";
 
 type Screen = "login" | "home" | "checkin";
+type CheckinMood = "good" | "okay" | "not_well" | "voice";
 type CheckinOption = { label: string; mood: "good" | "okay" | "not_well" };
 type VoiceState = "idle" | "recording" | "transcribing" | "review" | "sending";
 
@@ -56,7 +57,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
   const [taskDone, setTaskDone] = useState<Record<string, boolean>>({});
   const [checkinStep, setCheckinStep] = useState<"ask" | "done">("ask");
   const [patient, setPatient] = useState(initialPatient);
-  const [submittingMood, setSubmittingMood] = useState<CheckinOption["mood"] | null>(null);
+  const [submittingMood, setSubmittingMood] = useState<CheckinMood | null>(null);
   const [checkinError, setCheckinError] = useState("");
   const [voiceState, setVoiceState] = useState<VoiceState>("idle");
   const [voiceTranscript, setVoiceTranscript] = useState("");
@@ -72,7 +73,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
     );
   }
 
-  const submitCheckin = async (mood: CheckinOption["mood"], note?: string) => {
+  const submitCheckin = async (mood: CheckinMood, note?: string) => {
     setSubmittingMood(mood);
     setCheckinError("");
     try {
@@ -138,7 +139,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
 
   const sendVoiceCheckin = () => {
     setVoiceState("sending");
-    submitCheckin("okay", voiceTranscript);
+    submitCheckin("voice", voiceTranscript);
   };
 
   const firstName = patient.name.split(" ")[0];

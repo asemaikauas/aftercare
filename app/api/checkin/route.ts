@@ -1,6 +1,6 @@
 import { submitCheckin, type CheckinMood } from "../../../db/patients";
 
-const VALID_MOODS: CheckinMood[] = ["good", "okay", "not_well"];
+const VALID_MOODS: CheckinMood[] = ["good", "okay", "not_well", "voice"];
 
 export async function POST(request: Request) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       return Response.json({ error: "patientId is required" }, { status: 400 });
     }
     if (!VALID_MOODS.includes(mood)) {
-      return Response.json({ error: "mood must be one of: good, okay, not_well" }, { status: 400 });
+      return Response.json({ error: "mood must be one of: good, okay, not_well, voice" }, { status: 400 });
     }
 
     const patient = await submitCheckin(patientId, mood, note);

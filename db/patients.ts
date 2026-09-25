@@ -136,7 +136,7 @@ export async function getPatient(id: string): Promise<PatientProfile | undefined
   return row ? toProfile(row) : undefined;
 }
 
-export type CheckinMood = "good" | "okay" | "not_well";
+export type CheckinMood = "good" | "okay" | "not_well" | "voice";
 
 const riskRank: Record<PatientProfile["risk"], number> = { Stable: 0, Watch: 1, Critical: 2 };
 
@@ -155,7 +155,9 @@ export async function submitCheckin(id: string, mood: CheckinMood, note?: string
       ? { time: `Today · ${nowLabel()}`, title: "Check-in completed", detail: "Patient reported feeling good with no new symptoms.", source: "Patient app", tone: "stable" as const }
       : mood === "okay"
         ? { time: `Today · ${nowLabel()}`, title: "Check-in completed", detail: note ? `Patient reported some discomfort: ${note}` : "Patient reported some discomfort.", source: "Patient app", tone: "watch" as const }
-        : { time: `Today · ${nowLabel()}`, title: "New concern reported", detail: note ? `Patient flagged a new concern: ${note}` : "Patient flagged a new concern during check-in.", source: "Patient app", tone: "critical" as const };
+        : mood === "voice"
+          ? { time: `Today · ${nowLabel()}`, title: "Voice check-in completed", detail: note ? `Patient said: "${note}"` : "Patient completed a voice check-in.", source: "Patient app", tone: "watch" as const }
+          : { time: `Today · ${nowLabel()}`, title: "New concern reported", detail: note ? `Patient flagged a new concern: ${note}` : "Patient flagged a new concern during check-in.", source: "Patient app", tone: "critical" as const };
 
   const nextTimeline = [timelineEntry, ...patient.timeline];
 
@@ -173,6 +175,10 @@ export async function submitCheckin(id: string, mood: CheckinMood, note?: string
   if (mood === "okay") {
     nextRisk = riskRank[patient.risk] < riskRank.Watch ? "Watch" : patient.risk;
     nextScore = Math.min(99, patient.score + 8);
+    if (note) nextSymptoms = [note, ...patient.symptoms];
+  } else if (mood === "voice") {
+    // No sentiment classification is run on the transcript, so risk/score are
+    // left untouched here — a clinician reads the raw transcript and decides.
     if (note) nextSymptoms = [note, ...patient.symptoms];
   } else if (mood === "not_well") {
     nextRisk = "Critical";

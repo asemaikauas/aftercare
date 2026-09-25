@@ -1,4 +1,5 @@
 import styles from "./landing.module.css";
+import ResearchSection from "./ResearchSection";
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
@@ -35,6 +36,7 @@ export default function LandingPage() {
         </nav>
 
         <div className={styles.heroCopy}>
+          <div className={styles.heroBadge}><span /> Connected recovery operations</div>
           <h1>
             One minute a day.
             <span>A clearer recovery picture.</span>
@@ -50,6 +52,11 @@ export default function LandingPage() {
 
         <div className={styles.productStage} aria-label="Connected patient and clinic product preview">
           <div className={styles.stageGlow} />
+          <div className={styles.stageChrome} aria-hidden="true">
+            <span><i /><i /><i /></span>
+            <b>careminute.com / care overview</b>
+            <em>Live</em>
+          </div>
           <div className={styles.patientPreview}>
             <div className={styles.phoneTop}><span>9:41</span><i /></div>
             <div className={styles.phoneGreeting}>
@@ -94,6 +101,7 @@ export default function LandingPage() {
                 <div><small>WEDNESDAY, 25 SEPTEMBER</small><strong>Good morning, Maya</strong></div>
                 <button type="button">+ Add patient</button>
               </div>
+              <div className={styles.askBar}><span>✦</span><p>Ask CareMinute about your recovery cohort…</p><b>⌘ K</b></div>
               <div className={styles.priorityStrip}>
                 <div><span>Patient Priority</span><strong>4 need review now</strong></div>
                 <b>4 <small>Critical</small></b><b>3 <small>Watch</small></b><b>12 <small>Stable</small></b>
@@ -134,6 +142,8 @@ export default function LandingPage() {
           <div><b>Secure messaging</b></div>
         </div>
       </section>
+
+      <ResearchSection />
 
       <section className={styles.audiences}>
         <div className={styles.sectionHeading}>

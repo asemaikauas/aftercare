@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { decodeStore, initialStore, type Store } from "./model";
+import { clinicSubmission } from "./watch-transport";
 const KEY = "continuum-patient-v1";
 export function useStore() {
   const [store, setStore] = useState<Store>(initialStore);
@@ -37,12 +38,15 @@ export function useStore() {
     await task;
   }
   async function sync(url: string) {
-    const pending = [...current.current.outbox];
+    const pending = [...current.current.outbox].sort(
+      (a, b) =>
+        Number(b.kind === "watch-alert") - Number(a.kind === "watch-alert"),
+    );
     for (const item of pending) {
       const response = await fetch(`${url}/events`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(item),
+        body: JSON.stringify(clinicSubmission(item)),
         signal: AbortSignal.timeout(6000),
       });
       if (!response.ok)
@@ -56,5 +60,8 @@ export function useStore() {
     }
     return pending.length;
   }
-  return { store, ready, error, load, update, sync };
+  function isPending(id: string) {
+    return current.current.outbox.some((item) => item.id === id);
+  }
+  return { store, ready, error, load, update, sync, isPending };
 }

@@ -8,6 +8,7 @@ export type Checkin = {
   notes: string;
 };
 export type PatientState = {
+  watchEvents?: Submission[];
   checkins: Checkin[];
   doses: Record<string, string>;
   tasks: Record<string, boolean>;
@@ -17,7 +18,17 @@ export type Submission = {
   id: string;
   patientId: string;
   patientName: string;
-  kind: "check-in" | "medication" | "message" | "wearable";
+  kind:
+    | "check-in"
+    | "medication"
+    | "message"
+    | "wearable"
+    | "watch-checkin"
+    | "watch-reminder"
+    | "watch-response"
+    | "watch-alert";
+  simulated?: true;
+  trigger?: "heartbeat" | "breathing";
   createdAt: string;
   body: string;
 };

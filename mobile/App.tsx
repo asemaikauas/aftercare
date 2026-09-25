@@ -335,8 +335,8 @@ function PatientApp() {
         `${c.date}: feeling ${moods[c.mood - 1]}, pain ${c.pain}/10; ${c.symptoms.join(", ") || "no symptoms selected"}${c.notes ? `; ${c.notes}` : ""}`,
     );
     await Share.share({
-      title: "aftercare recovery summary",
-      message: `aftercare recovery record\n${patient.name}\n${patient.procedure}\n\n${lines.join("\n") || "No check-ins recorded yet."}`,
+      title: "CareMinute recovery summary",
+      message: `CareMinute recovery record\n${patient.name}\n${patient.procedure}\n\n${lines.join("\n") || "No check-ins recorded yet."}`,
     });
   }
   async function shareWearableSnapshot() {
@@ -395,7 +395,7 @@ function PatientApp() {
               <Icon name="leaf" size={21} color={C.lime} />
             </View>
             <Text style={s.brand}>
-              aftercare<Text style={{ color: "#839278" }}>.</Text>
+              CareMinute<Text style={{ color: "#839278" }}>.</Text>
             </Text>
           </View>
           <Pressable
@@ -1113,7 +1113,7 @@ function PatientApp() {
           )}
           <View style={{ alignItems: "center", gap: 4, marginTop: 3 }}>
             <Text style={[s.small, { fontSize: 10, letterSpacing: 1 }]}>
-              aftercare
+              CareMinute
             </Text>
             <Text style={[s.small, { fontSize: 11 }]}>
               {pending
@@ -1491,7 +1491,7 @@ function PatientApp() {
                               data.service !== "continuum-demo"
                             )
                               throw new Error(
-                                "This server is not compatible with aftercare.",
+                                "This server is not compatible with CareMinute.",
                               );
                             await update((value) => ({
                               ...value,
@@ -1545,7 +1545,7 @@ function PatientApp() {
                             const token = await getPushToken();
                             await Share.share({
                               message: token,
-                              title: "aftercare Expo push token",
+                              title: "CareMinute Expo push token",
                             });
                             setNotice(
                               "Device registered. No clinic push service is connected yet.",

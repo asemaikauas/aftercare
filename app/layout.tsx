@@ -10,17 +10,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(origin),
-    title: "Aftercare — Post-discharge care command center",
+    title: "CareMinute — Post-discharge care command center",
     description: "A clinician workspace for prioritizing post-discharge risk, reviewing patient context, and coordinating approved follow-up actions.",
     openGraph: {
-      title: "Aftercare — Post-discharge care command center",
+      title: "CareMinute — Post-discharge care command center",
       description: "Post-discharge care, clearly prioritized.",
       type: "website",
-      images: [{ url: `${origin}/og.png`, width: 1200, height: 630, alt: "Aftercare post-discharge care command center" }],
+      images: [{ url: `${origin}/og.png`, width: 1200, height: 630, alt: "CareMinute post-discharge care command center" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Aftercare — Post-discharge care command center",
+      title: "CareMinute — Post-discharge care command center",
       description: "Post-discharge care, clearly prioritized.",
       images: [`${origin}/og.png`],
     },

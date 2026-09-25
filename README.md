@@ -1,6 +1,6 @@
-# Aftercare
+# CareMinute
 
-Aftercare is a clinic-side command center for post-discharge care. It helps care
+CareMinute is a clinic-side command center for post-discharge care. It helps care
 managers understand which patients need attention, why they were prioritized,
 and what approved follow-up action can happen next.
 
@@ -14,7 +14,7 @@ Run `npm run demo:server -- --lan` for the optional local phone-to-clinic bridge
 Incoming submissions appear in **Patient app inbox** inside **Voice check-ins**.
 Use the local bridge only on a trusted network.
 
-Aftercare is decision-support software, not a diagnostic system or an emergency
+CareMinute is decision-support software, not a diagnostic system or an emergency
 service.
 
 ## Product scope

@@ -34,12 +34,12 @@ export default function LoginPage() {
       <div className="w-full max-w-[380px]">
         <Link href="/" className="mb-8 flex items-center justify-center gap-2 text-[17px] font-bold tracking-tight text-[var(--ink)]">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--forest)] text-white">A</span>
-          Aftercare
+          CareMinute
         </Link>
 
         <form onSubmit={handleSubmit} className="rounded-2xl border border-[var(--line)] bg-white p-7 shadow-[0_20px_40px_rgba(24,36,33,.06)]">
           <h1 className="text-[20px] font-bold text-[var(--ink)]">Administrator login</h1>
-          <p className="mt-1 text-[13px] text-[var(--muted)]">Sign in to the Aftercare clinician workspace.</p>
+          <p className="mt-1 text-[13px] text-[var(--muted)]">Sign in to the CareMinute clinician workspace.</p>
 
           <label className="mt-6 block text-[12px] font-semibold text-[var(--ink)]">
             Username

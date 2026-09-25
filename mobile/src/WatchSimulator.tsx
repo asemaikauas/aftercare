@@ -223,7 +223,7 @@ export default function WatchSimulator(props: Props) {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}{" "}
-                · aftercare
+                · CareMinute
               </Text>
               {screen === "home" && (
                 <>

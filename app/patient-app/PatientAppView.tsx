@@ -52,8 +52,8 @@ function TabBar({ active }: { active: "home" | "plan" | "messages" | "profile" }
   );
 }
 
-export default function PatientAppView({ patient: initialPatient, embed = false }: { patient: PatientProfile | undefined; embed?: boolean }) {
-  const [screen, setScreen] = useState<Screen>("login");
+export default function PatientAppView({ patient: initialPatient, embed = false, startAtCheckin = false }: { patient: PatientProfile | undefined; embed?: boolean; startAtCheckin?: boolean }) {
+  const [screen, setScreen] = useState<Screen>(startAtCheckin ? "checkin" : "login");
   const [taskDone, setTaskDone] = useState<Record<string, boolean>>({});
   const [checkinStep, setCheckinStep] = useState<"ask" | "done">("ask");
   const [patient, setPatient] = useState(initialPatient);
@@ -155,7 +155,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--forest)] text-2xl font-bold text-white">A</div>
               <div>
                 <h1 className="text-[22px] font-bold text-[var(--ink)]">Welcome back</h1>
-                <p className="mt-1 text-[13px] text-[var(--muted)]">Aftercare patient app</p>
+                <p className="mt-1 text-[13px] text-[var(--muted)]">CareMinute patient app</p>
               </div>
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--canvas)] text-3xl">{patient.initials}</div>
               <p className="text-[15px] font-semibold text-[var(--ink)]">{patient.name}</p>
@@ -254,9 +254,26 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
             <div className="flex flex-1 flex-col px-5 pb-3 pt-2">
               <button type="button" onClick={() => setScreen("home")} className="self-start text-[13px] font-medium text-[var(--forest)]">← Back</button>
               {checkinStep === "ask" ? (
-                <div className="mt-6 flex flex-1 flex-col items-center justify-center gap-5 text-center">
-                  <h1 className="text-[20px] font-bold text-[var(--ink)]">How are you feeling today?</h1>
-                  <p className="text-[13px] text-[var(--muted)]">Your care team reviews every check-in.</p>
+                <div className="mt-4 flex flex-1 flex-col items-center justify-center gap-4 text-center">
+                  <div className="flex w-full items-center justify-between">
+                    <div className="text-left">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">Daily conversation</p>
+                      <h1 className="mt-1 text-[20px] font-bold text-[var(--ink)]">60-second check-in</h1>
+                    </div>
+                    <span className="rounded-full bg-[var(--green-soft)] px-3 py-1.5 text-[11px] font-semibold text-[var(--green)]">About 1 min</span>
+                  </div>
+
+                  <div className="w-full rounded-2xl bg-[var(--green-soft)] p-4 text-left">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--forest)] text-[11px] font-bold text-white">A</span>
+                      <span className="text-[11px] font-semibold text-[var(--forest)]">CareMinute</span>
+                    </div>
+                    <p className="mt-3 text-[14px] leading-5 text-[var(--ink)]">Good morning, {firstName}. How are you feeling today? Tell me about any pain, symptoms, or medication concerns.</p>
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      <span className="rounded-full bg-white/80 px-2 py-1 text-[9px] font-semibold text-[var(--forest)]">WHOOP synced</span>
+                      <span className="rounded-full bg-white/80 px-2 py-1 text-[9px] font-semibold text-[var(--forest)]">Apple Health synced</span>
+                    </div>
+                  </div>
 
                   <div className="w-full rounded-2xl border border-[var(--line)] bg-[var(--canvas)] p-4">
                     {voiceState === "idle" && (
@@ -269,7 +286,7 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
                         >
                           🎙️
                         </button>
-                        <p className="mt-2 text-[12px] font-medium text-[var(--ink)]">Tap to speak your check-in</p>
+                        <p className="mt-2 text-[12px] font-medium text-[var(--ink)]">Tap to answer naturally</p>
                         {voiceError && <p className="mt-1 text-[11px] font-medium text-[var(--coral)]">{voiceError}</p>}
                       </>
                     )}

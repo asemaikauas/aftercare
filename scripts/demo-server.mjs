@@ -118,7 +118,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const port = Number(process.env.DEMO_PORT || 4100);
   createDemoServer().listen(port, host, () =>
     console.log(
-      `Aftercare local inbox: http://${host}:${port}\nUse --lan on a trusted local network to connect a phone. Do not expose this unauthenticated service publicly.`,
+      `CareMinute local inbox: http://${host}:${port}\nUse --lan on a trusted local network to connect a phone. Do not expose this unauthenticated service publicly.`,
     ),
   );
 }

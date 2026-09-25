@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "aftercare",
+    "name": "CareMinute",
     "slug": "aftercare-patient",
     "scheme": "aftercare",
     "version": "1.0.0",
@@ -23,7 +23,7 @@
       "expo-audio"
     ],
     "web": {
-      "name": "aftercare",
+      "name": "CareMinute",
       "bundler": "metro"
     }
   }

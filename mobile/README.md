@@ -1,4 +1,4 @@
-# Aftercare — patient app
+# CareMinute — patient app
 
 A native React Native / Expo SDK 57 app for iOS and Android, with a browser preview. The administrator application remains at the repository root.
 

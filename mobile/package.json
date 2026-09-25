@@ -1,7 +1,7 @@
 {
   "name": "aftercare-patient",
   "private": true,
-  "description": "aftercare patient recovery companion for iOS and Android.",
+  "description": "CareMinute patient recovery companion for iOS and Android.",
   "license": "0BSD",
   "version": "1.0.0",
   "main": "index.ts",

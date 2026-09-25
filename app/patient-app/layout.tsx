@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Aftercare",
+  title: "CareMinute",
   manifest: "/patient-app-manifest.json",
   themeColor: "#163f36",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Aftercare",
+    title: "CareMinute",
   },
   icons: {
     apple: "/patient-app-icon-180.png",

@@ -54,7 +54,7 @@ export default function PatientProfileView({ patient }: { patient: PatientProfil
   return (
     <div className="profile-shell">
       <aside className="profile-sidebar">
-        <a className="brand profile-brand" href="/dashboard"><span className="brand-mark">A</span><span>Aftercare</span></a>
+        <a className="brand profile-brand" href="/dashboard"><span className="brand-mark">C</span><span>CareMinute</span></a>
         <a className="back-to-cohort" href="/dashboard"><span>←</span> Back to patient priority</a>
         <div className="profile-side-patient">
           <span className={`avatar profile-avatar ${patient.risk.toLowerCase()}`}>{patient.initials}<i /></span>

@@ -21,9 +21,9 @@ export default function LandingPage() {
       <section className={styles.hero} id="home">
         <div className={styles.rail} aria-hidden="true" />
         <nav className={styles.nav} aria-label="Main navigation">
-          <a className={styles.brand} href="#home" aria-label="Aftercare home">
+          <a className={styles.brand} href="#home" aria-label="CareMinute home">
             <span className={styles.brandMark}><PulseIcon /></span>
-            <span>Aftercare</span>
+            <span>CareMinute</span>
           </a>
           <div className={styles.navLinks}>
             <a href="#patients">For patients</a>
@@ -36,11 +36,11 @@ export default function LandingPage() {
 
         <div className={styles.heroCopy}>
           <h1>
-            One recovery journey.
-            <span>Two connected experiences.</span>
+            One minute a day.
+            <span>A clearer recovery picture.</span>
           </h1>
           <p className={styles.heroText}>
-            Aftercare keeps patients supported at home and gives clinical teams the signal they need to act early—without adding another disconnected workflow.
+            CareMinute combines a 60-second daily check-in with WHOOP and Apple Health signals, helping patients share how they feel and giving care teams the context to act early.
           </p>
           <div className={styles.heroActions}>
             <a className={styles.primaryCta} href="/patient-app">Open patient app <Arrow /></a>
@@ -58,8 +58,8 @@ export default function LandingPage() {
               <p>Here&apos;s how your recovery is tracking.</p>
             </div>
             <div className={styles.recoveryCard}>
-              <div className={styles.recoveryRing}><strong>67</strong><span>%</span></div>
-              <div><span>Recovery</span><strong>Building steadily</strong><small>Up 8% from yesterday</small></div>
+              <div className={styles.recoveryRing}><strong>60</strong><span>sec</span></div>
+              <div><span>Today&apos;s check-in</span><strong>How are you feeling?</strong><small>Speak, type, or tap to answer</small></div>
             </div>
             <div className={styles.phoneMetrics}>
               <div><span>Sleep</span><strong>7h 42m</strong><small>Good</small></div>
@@ -67,20 +67,25 @@ export default function LandingPage() {
             </div>
             <div className={styles.checkinCard}>
               <span className={styles.mic}>●</span>
-              <div><strong>Daily voice check-in</strong><small>Tell your care team how you feel</small></div>
+              <div><strong>Start 60-sec check-in</strong><small>Connected to your health signals</small></div>
               <b>→</b>
+            </div>
+            <div className={styles.integrationRow} aria-label="Connected health integrations">
+              <span className={styles.whoopBadge}><i />WHOOP</span>
+              <span className={styles.healthBadge}><i>♥</i>Apple Health</span>
+              <small>Synced</small>
             </div>
           </div>
 
           <div className={styles.connectionBadge}>
             <span><PulseIcon /></span>
-            <div><strong>Connected care</strong><small>Signals synced securely</small></div>
+            <div><strong>WHOOP + Apple Health</strong><small>Signals synced securely</small></div>
             <i />
           </div>
 
           <div className={styles.clinicPreview}>
             <div className={styles.clinicBar}>
-              <div><span className={styles.miniMark}>A</span><strong>Aftercare</strong></div>
+              <div><span className={styles.miniMark}>C</span><strong>CareMinute</strong></div>
               <div className={styles.clinicNav}><b>Overview</b><span>Patients</span><span>Messages</span></div>
               <span className={styles.avatar}>MN</span>
             </div>
@@ -123,9 +128,9 @@ export default function LandingPage() {
         <div className={styles.signalStrip}>
           <span>One connected care loop</span>
           <div><b>Voice check-ins</b><i /></div>
-          <div><b>Wearable signals</b><i /></div>
+          <div><b>WHOOP</b><i /></div>
+          <div><b>Apple Health</b><i /></div>
           <div><b>Care plans</b><i /></div>
-          <div><b>Clinical records</b><i /></div>
           <div><b>Secure messaging</b></div>
         </div>
       </section>
@@ -139,12 +144,12 @@ export default function LandingPage() {
         <article className={`${styles.audienceCard} ${styles.patientCard}`} id="patients">
           <div className={styles.audienceCopy}>
             <span className={styles.audienceNumber}>01 · FOR PATIENTS</span>
-            <h3>A calmer way to recover at home.</h3>
-            <p>See what matters today, understand your wearable trends, complete care tasks, and reach your care team without searching across different apps.</p>
+            <h3>One minute to tell the whole story.</h3>
+            <p>A 60-second daily check-in captures how recovery feels, while WHOOP and Apple Health add the passive signals patients should not have to remember or re-enter.</p>
             <ul>
-              <li><span>✓</span> A simple daily recovery score with clear context</li>
-              <li><span>✓</span> Voice check-ins when typing feels like too much</li>
-              <li><span>✓</span> Sleep, strain, HRV, and resting heart rate trends</li>
+              <li><span>✓</span> 60-second check-ins by voice, chat, or simple taps</li>
+              <li><span>✓</span> WHOOP recovery, sleep, strain, and HRV signals</li>
+              <li><span>✓</span> Apple Health activity, heart rate, and sleep context</li>
               <li><span>✓</span> Care-plan reminders and secure clinic messages</li>
             </ul>
             <a href="/patient-app">Explore the patient experience <Arrow /></a>
@@ -153,7 +158,7 @@ export default function LandingPage() {
             <div className={styles.patientTimeline}>
               <div className={styles.timelineTop}><span>Today</span><strong>Recovery plan</strong><em>2 of 3 done</em></div>
               <div className={styles.timelineItem}><b className={styles.complete}>✓</b><div><strong>Morning medication</strong><small>Completed at 8:10 AM</small></div></div>
-              <div className={styles.timelineItem}><b>2</b><div><strong>Record a voice check-in</strong><small>About 30 seconds</small></div><span>Start</span></div>
+              <div className={styles.timelineItem}><b>2</b><div><strong>Complete today&apos;s check-in</strong><small>About 60 seconds</small></div><span>Start</span></div>
               <div className={styles.timelineItem}><b>3</b><div><strong>Breathing exercises</strong><small>10 minutes · Before 6 PM</small></div></div>
               <div className={styles.careMessage}><span>MN</span><div><strong>Maya · Care team</strong><p>Your readings look steady today. Keep following your plan and message us if anything changes.</p></div></div>
             </div>
@@ -197,7 +202,7 @@ export default function LandingPage() {
         </div>
         <div className={styles.steps}>
           {[
-            ["01", "Connect", "Bring together patient check-ins, wearables, care plans, and clinical records."],
+            ["01", "Connect", "Bring together 60-second patient check-ins with WHOOP, Apple Health, care plans, and clinical records."],
             ["02", "Understand", "Turn scattered updates into a clear, personal view of recovery."],
             ["03", "Prioritize", "Surface patients who meet clinic-defined review rules, with the evidence attached."],
             ["04", "Follow through", "Review, message, assign, and document the next action in one shared workflow."],
@@ -210,7 +215,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className={styles.platform}>
+      <section className={styles.platform} id="connected-platform">
         <div className={styles.platformIntro}>
           <p className={styles.eyebrow}>One connected platform</p>
           <h2>Every signal in view.<br />Every action accountable.</h2>
@@ -218,29 +223,50 @@ export default function LandingPage() {
         <div className={styles.featureGrid}>
           <article className={`${styles.feature} ${styles.featureLarge}`}>
             <div className={styles.featureIcon}><PulseIcon /></div>
-            <h3>Wearable intelligence</h3>
-            <p>Turn recovery, sleep, strain, HRV, and resting heart rate into understandable trends for patients and reviewable evidence for clinicians.</p>
-            <div className={styles.miniChart}>
-              {[42, 56, 49, 68, 61, 74, 67, 82, 78, 91, 86, 96].map((height, index) => <i key={index} style={{ height: `${height}%` }} />)}
+            <h3>60-second check-ins, enriched automatically</h3>
+            <p>Pair what a patient says each day with WHOOP and Apple Health data to understand both the lived experience and the physiological trend.</p>
+            <div className={styles.integrationPanel}>
+              <div><span className={styles.integrationLogo}>60</span><p><strong>Daily check-in</strong><small>Symptoms · mood · medication</small></p></div>
+              <b>+</b>
+              <div><span className={`${styles.integrationLogo} ${styles.whoopLogo}`}>W</span><p><strong>WHOOP</strong><small>Recovery · sleep · strain</small></p></div>
+              <b>+</b>
+              <div><span className={`${styles.integrationLogo} ${styles.appleLogo}`}>♥</span><p><strong>Apple Health</strong><small>Activity · heart · sleep</small></p></div>
             </div>
           </article>
-          <article className={styles.feature}>
-            <div className={styles.featureIcon}>◎</div>
-            <h3>Voice-first check-ins</h3>
-            <p>Patients can describe how they feel naturally. The clinic receives a structured update alongside the original context.</p>
-            <div className={styles.waveform}>{[18, 32, 52, 28, 68, 42, 76, 34, 58, 22, 44, 30].map((height, index) => <i key={index} style={{ height }} />)}</div>
+          <article className={`${styles.feature} ${styles.conversationFeature}`}>
+            <div className={styles.conversationCopy}>
+              <div className={styles.featureIcon}>◎</div>
+              <h3>Built to take 60 seconds</h3>
+              <p>Speak, type, or tap through a short, adaptive conversation. CareMinute listens for what changed and pairs it with connected health signals.</p>
+            </div>
+            <div className={styles.conversationVisual}>
+              <div className={styles.conversationLines}>
+                <span><b>A</b>Did you consume any sugar today?</span>
+                <span>A bar of dark chocolate.</span>
+                <span><b>A</b>How did you feel after it?</span>
+                <em><b>60</b> sec check-in</em>
+              </div>
+              <img src="/checkin-conversation.webp" alt="Patient speaking into their phone during a CareMinute check-in" />
+            </div>
           </article>
-          <article className={styles.feature}>
-            <div className={styles.featureIcon}>✦</div>
-            <h3>Explainable AI</h3>
-            <p>Every brief points back to its source signals. Teams review the evidence before any clinical action.</p>
-            <div className={styles.explainBox}><span>Based on</span><b>Check-in</b><b>Wearable</b><b>Care plan</b></div>
+          <article className={`${styles.feature} ${styles.actionFeature}`}>
+            <div className={styles.actionCopy}>
+              <div className={styles.featureIcon}>↗</div>
+              <p className={styles.featureKicker}>More than monitoring</p>
+              <h3>It can take care of the next step.</h3>
+              <p>CareMinute turns a conversation into a clear action, so patients can keep moving without another phone call or portal search.</p>
+            </div>
+            <div className={styles.actionList}>
+              <div><span className={styles.actionSymbol}>Rx</span><p><strong>Request a medication refill</strong><small>CareMinute collects the details and routes them for authorized review.</small></p><b>Request ready</b></div>
+              <div><span className={styles.actionSymbol}>15</span><p><strong>Book an appointment</strong><small>See available times and confirm the one that works for you.</small></p><b>3 times found</b></div>
+              <small><span>✓</span> You confirm every action before it is sent.</small>
+            </div>
           </article>
           <article className={`${styles.feature} ${styles.featureWide}`}>
             <div>
               <div className={styles.featureIcon}><ShieldIcon /></div>
               <h3>Designed around human review</h3>
-              <p>Aftercare supports decisions; it does not make them. Clinic-defined rules, source-level evidence, and explicit review states keep people accountable.</p>
+              <p>CareMinute supports decisions; it does not make them. Clinic-defined rules, source-level evidence, and explicit review states keep people accountable.</p>
             </div>
             <div className={styles.reviewFlow}><span>Signal received</span><b>→</b><span>Rule matched</span><b>→</b><span className={styles.reviewActive}>Clinician review</span><b>→</b><span>Action logged</span></div>
           </article>
@@ -265,7 +291,7 @@ export default function LandingPage() {
       </section>
 
       <footer className={styles.footer}>
-        <a className={styles.brand} href="#home"><span className={styles.brandMark}><PulseIcon /></span><span>Aftercare</span></a>
+        <a className={styles.brand} href="#home"><span className={styles.brandMark}><PulseIcon /></span><span>CareMinute</span></a>
         <p>Patient recovery operations, connected from home to clinic.</p>
         <div><a href="/patient-app">Patient app</a><a href="/login">Clinic sign in</a><a href="#safety">Safety</a></div>
         <small>Decision support only · Not for emergency use</small>

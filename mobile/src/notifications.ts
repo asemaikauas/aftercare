@@ -42,7 +42,7 @@ export async function enableReminders(time: string) {
   const identifier = await n.scheduleNotificationAsync({
     content: {
       title: "A little time for your care",
-      body: "Review your medication plan and today’s check-in in aftercare.",
+      body: "Review your medication plan and today’s check-in in CareMinute.",
       sound: "default",
       data: { screen: "Medication", type: "care-reminder" },
     },
@@ -78,7 +78,7 @@ export async function testReminder() {
   await n.scheduleNotificationAsync({
     content: {
       title: "Your care, one step at a time",
-      body: "Open your aftercare plan when you’re ready.",
+      body: "Open your CareMinute plan when you’re ready.",
       data: { screen: "Medication" },
     },
     trigger: {

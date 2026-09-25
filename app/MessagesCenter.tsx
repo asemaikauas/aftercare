@@ -109,7 +109,7 @@ export default function MessagesCenter({ onNotify }: { onNotify: (message: strin
           </> : <div className="conversation-empty"><span>□</span><h2>Select a conversation</h2><p>Choose a patient thread to review sent messages and replies.</p></div>}
         </article>
       </section>
-      <footer className="page-foot"><span>Aftercare · Messages stored on this device</span><span>Not for emergency use</span></footer>
+      <footer className="page-foot"><span>CareMinute · Messages stored on this device</span><span>Not for emergency use</span></footer>
     </div>
   );
 }

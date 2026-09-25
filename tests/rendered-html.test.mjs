@@ -56,13 +56,13 @@ async function render(pathname = "/") {
   return fetch(`${origin}${pathname}`, { headers: { accept: "text/html" } });
 }
 
-test("server-renders the Aftercare landing page", async () => {
+test("server-renders the CareMinute landing page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Aftercare — Post-discharge care command center<\/title>/i);
+  assert.match(html, /<title>CareMinute — Post-discharge care command center<\/title>/i);
   assert.match(html, /Patient Priority/);
   assert.match(html, /AI Care Brief/);
   assert.match(html, /Patient recovery operations/);
@@ -77,6 +77,21 @@ test("renders safety and human-review boundaries", async () => {
   assert.match(html, /require clinical review/);
   assert.match(html, /not for emergency use/i);
   assert.match(html, /source signal behind it/);
+});
+
+test("presents the connected 60-second daily check-in", async () => {
+  const response = await render();
+  const html = await response.text();
+
+  assert.match(html, /WHOOP/);
+  assert.match(html, /Apple Health/);
+  assert.match(html, /Speak, type, or tap to answer/i);
+  assert.match(html, /checkin-conversation\.webp/i);
+  assert.match(html, /Request a medication refill/i);
+  assert.match(html, /Book an appointment/i);
+  assert.match(html, /Did you consume any sugar today/i);
+  assert.match(html, /A bar of dark chocolate/i);
+  assert.match(html, /How did you feel after it/i);
 });
 
 test("renders a dedicated patient profile route", async () => {

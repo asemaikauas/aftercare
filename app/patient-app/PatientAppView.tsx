@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { PatientProfile } from "../../db/types";
 import { dayOfRecovery } from "../dashboard-adapter";
 
 type Screen = "login" | "home" | "checkin";
 type CheckinOption = { label: string; mood: "good" | "okay" | "not_well" };
+type VoiceState = "idle" | "recording" | "transcribing" | "review" | "sending";
 
 const CHECKIN_OPTIONS: CheckinOption[] = [
   { label: "Good — no new symptoms", mood: "good" },
@@ -57,6 +58,11 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
   const [patient, setPatient] = useState(initialPatient);
   const [submittingMood, setSubmittingMood] = useState<CheckinOption["mood"] | null>(null);
   const [checkinError, setCheckinError] = useState("");
+  const [voiceState, setVoiceState] = useState<VoiceState>("idle");
+  const [voiceTranscript, setVoiceTranscript] = useState("");
+  const [voiceError, setVoiceError] = useState("");
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   if (!patient) {
     return (
@@ -66,24 +72,73 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
     );
   }
 
-  const submitCheckin = async (mood: CheckinOption["mood"]) => {
+  const submitCheckin = async (mood: CheckinOption["mood"], note?: string) => {
     setSubmittingMood(mood);
     setCheckinError("");
     try {
       const response = await fetch("/api/checkin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ patientId: patient.id, mood }),
+        body: JSON.stringify({ patientId: patient.id, mood, note }),
       });
       const data = (await response.json()) as { patient?: PatientProfile; error?: string };
       if (!response.ok || !data.patient) throw new Error(data.error ?? "Check-in failed");
       setPatient(data.patient);
       setCheckinStep("done");
+      setVoiceState("idle");
+      setVoiceTranscript("");
     } catch {
       setCheckinError("Couldn't send your check-in. Please try again.");
+      setVoiceState("review");
     } finally {
       setSubmittingMood(null);
     }
+  };
+
+  const startRecording = async () => {
+    setVoiceError("");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
+      };
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((track) => track.stop());
+        const mimeType = recorder.mimeType || "audio/webm";
+        const blob = new Blob(audioChunksRef.current, { type: mimeType });
+        setVoiceState("transcribing");
+        try {
+          const extension = mimeType.includes("mp4") ? "mp4" : mimeType.includes("ogg") ? "ogg" : "webm";
+          const form = new FormData();
+          form.append("audio", blob, `checkin.${extension}`);
+          const response = await fetch("/api/transcribe", { method: "POST", body: form });
+          const data = (await response.json()) as { transcript?: string; error?: string };
+          if (!response.ok || !data.transcript) throw new Error(data.error ?? "Transcription failed");
+          setVoiceTranscript(data.transcript);
+          setVoiceState("review");
+        } catch (error) {
+          setVoiceError(error instanceof Error ? error.message : "Couldn't transcribe that. Please try again.");
+          setVoiceState("idle");
+        }
+      };
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setVoiceState("recording");
+    } catch {
+      setVoiceError("Microphone access is needed to record a voice check-in.");
+      setVoiceState("idle");
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+  };
+
+  const sendVoiceCheckin = () => {
+    setVoiceState("sending");
+    submitCheckin("okay", voiceTranscript);
   };
 
   const firstName = patient.name.split(" ")[0];
@@ -201,7 +256,71 @@ export default function PatientAppView({ patient: initialPatient, embed = false 
                 <div className="mt-6 flex flex-1 flex-col items-center justify-center gap-5 text-center">
                   <h1 className="text-[20px] font-bold text-[var(--ink)]">How are you feeling today?</h1>
                   <p className="text-[13px] text-[var(--muted)]">Your care team reviews every check-in.</p>
-                  <div className="mt-2 flex w-full flex-col gap-3">
+
+                  <div className="w-full rounded-2xl border border-[var(--line)] bg-[var(--canvas)] p-4">
+                    {voiceState === "idle" && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={startRecording}
+                          className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--forest)] text-[26px] text-white active:opacity-80"
+                          aria-label="Start voice check-in"
+                        >
+                          🎙️
+                        </button>
+                        <p className="mt-2 text-[12px] font-medium text-[var(--ink)]">Tap to speak your check-in</p>
+                        {voiceError && <p className="mt-1 text-[11px] font-medium text-[var(--coral)]">{voiceError}</p>}
+                      </>
+                    )}
+                    {voiceState === "recording" && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={stopRecording}
+                          className="mx-auto flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-[var(--coral)] text-[26px] text-white"
+                          aria-label="Stop recording"
+                        >
+                          ⏹️
+                        </button>
+                        <p className="mt-2 text-[12px] font-medium text-[var(--coral)]">Recording… tap to stop</p>
+                      </>
+                    )}
+                    {voiceState === "transcribing" && (
+                      <p className="py-4 text-[13px] font-medium text-[var(--muted)]">Transcribing your check-in…</p>
+                    )}
+                    {(voiceState === "review" || voiceState === "sending") && (
+                      <div className="text-left">
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">You said</p>
+                        <textarea
+                          value={voiceTranscript}
+                          onChange={(event) => setVoiceTranscript(event.target.value)}
+                          rows={3}
+                          className="mt-1 w-full rounded-xl border border-[var(--line)] bg-white p-2.5 text-[13px] text-[var(--ink)]"
+                        />
+                        <div className="mt-2 flex gap-2">
+                          <button
+                            type="button"
+                            disabled={voiceState === "sending"}
+                            onClick={() => { setVoiceState("idle"); setVoiceTranscript(""); }}
+                            className="rounded-full border border-[var(--line)] bg-white px-4 py-2 text-[12px] font-semibold text-[var(--ink)] disabled:opacity-60"
+                          >
+                            Record again
+                          </button>
+                          <button
+                            type="button"
+                            disabled={voiceState === "sending" || !voiceTranscript.trim()}
+                            onClick={sendVoiceCheckin}
+                            className="flex-1 rounded-full bg-[var(--forest)] px-4 py-2 text-[12px] font-semibold text-white disabled:opacity-60"
+                          >
+                            {voiceState === "sending" ? "Sending…" : "Send check-in"}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="text-[11px] font-medium uppercase tracking-wide text-[var(--muted)]">or choose one</p>
+                  <div className="flex w-full flex-col gap-3">
                     {CHECKIN_OPTIONS.map((option) => (
                       <button
                         key={option.label}
